@@ -16,7 +16,7 @@ Dependencies / 依存関係
 - fmtlib / fmtlib
 
 -------------------------------------------------------------------------------------
-Build Instructions / ビルド手順
+Build Instructions; / ビルド手順
 
 To create the builds　first go go to the project root via the terminal and use the following cmake commands for release and debug builds<br>
 ビルドを作りたい時はターミナルでプロジェクトのディレクトリまで移動し下記のCMAKEのコマンドを使用してください
