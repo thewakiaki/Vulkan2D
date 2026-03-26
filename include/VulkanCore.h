@@ -2,6 +2,7 @@
 #include "utils/ClassUitility.h"
 
 class GameWindow;
+class VulkanInstance;
 
 class VulkanCore : private ClassUtilities::ImmutableOwner<VulkanCore>{
 
@@ -12,6 +13,8 @@ public:
     bool InitVulkan();
 
 private:
+
+    std::unique_ptr<VulkanInstance> mInstance;
 
     const GameWindow& mGameWindow;
 };

@@ -10,7 +10,7 @@ bool ErrorChecking::GlfwWindowCheck(GLFWwindow *window, const char* errorContext
     return true;
 }
 
-bool ErrorChecking::VkResultCheck(VkResult &result, std::string checkComponent){
+bool ErrorChecking::VkResultCheck(VkResult &result, const char* checkComponent){
 
     if(result != VK_SUCCESS){
         fmt::print("Failed to create: {} error type {}\n",checkComponent, string_VkResult(result));

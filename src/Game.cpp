@@ -17,7 +17,7 @@ bool Game::StartGame(){
 
     mPlaying = true;
 
-    Play();
+    //Play();
 
     return true;
 }
