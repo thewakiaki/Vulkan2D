@@ -35,7 +35,8 @@ After using the debug/release commands use the following the commands to build t
   - cmake --build build-debug
   - cmake --build build-release
 
-replace target-directory with the directory you want to build the app<br><br>
-自分でターゲットディレクトリ場合はtarget-directoryを自分のものと入れ替えてください
+Again replace build-debug and build-release with the directory you want to build the app<br><br>
+自分でターゲットディレクトリを指定した場合build-debugやbuild-releaseを指定したターゲットディレクトリ名に変更してくたさい
+
 
 --------------------------------------------------------------------------------------
