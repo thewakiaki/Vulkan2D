@@ -1,19 +1,63 @@
-CMakeLists.txt.user
+# Build directories
+build*/
+build-debug/
+build-release/
+cmake-build*/
+*.ninja_deps
+*.ninja_log
+
+# CMake
 CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
+CMakeFiles/
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
-_deps
-CMakeUserPresets.json
+Makefile
+cmake-*.ninja
 
-# CLion
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#cmake-build-*
+# Object files
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+
+# Executables
+Vulkan2D
+VulkanFramework2D
+prog
+
+# Dependencies
+**/external/
+**/deps/
+**/vcpkg/
+.vscode/
+.zed/
+
+# IDEs
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vulkan shaders
+Assets/Shaders/*.spv
+Assets/Shaders/*.cache
+*.spv
+
+# Logs
+logs/
+*.log
+
+# Zed/CodeLLDB
+.lldb/
+debug-*
+
+# CMake presets
+CMakePresets.json
+CMakeUserPresets.json
