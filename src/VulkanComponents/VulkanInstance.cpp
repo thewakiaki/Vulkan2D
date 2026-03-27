@@ -1,8 +1,12 @@
 #include "VulkanComponents/VulkanInstance.h"
 #include "utils/ErrorChecking.h"
+#include "utils/VulkanHelpers.h"
+#include "utils/Constants.h"
+#include "VulkanCore.h"
 
-VulkanInstance::VulkanInstance(){
-    mRequiredExtensionNames.clear();
+VulkanInstance::VulkanInstance(std::vector<const char*>& requiredExt, std::vector<const char*>& requiredLay)
+                                : mRequiredExtensionNames(requiredExt), mRequiredLayerNames(requiredLay){
+
 }
 
 VulkanInstance::~VulkanInstance(){
@@ -21,7 +25,9 @@ bool VulkanInstance::SetupInstance(){
     VkApplicationInfo appInfo{};
     VkInstanceCreateInfo instanceInfo{};
 
-    if(!SetupExtensions()) { return false; }
+    if(!VulkanHelpers::RequirementCheck::RequiredInstanceLayersSupported(mRequiredLayerNames)) { return false; }
+
+    if(!VulkanHelpers::RequirementCheck::RequiredInstanceExtensionsSupported(mRequiredExtensionNames)) { return false; }
 
     SetAppInfo(appInfo);
     SetInstanceCI(instanceInfo, appInfo);
@@ -30,7 +36,7 @@ bool VulkanInstance::SetupInstance(){
 
     if(!ErrorChecking::VkResultCheck(result, "Instance")) { return false; }
 
-    fmt::print("Instance create\n");
+    fmt::print("Instance created\n");
 
     return true;
 }
@@ -49,48 +55,13 @@ void VulkanInstance::SetInstanceCI(VkInstanceCreateInfo& info, VkApplicationInfo
     info.pApplicationInfo = &appInfo;
     info.enabledExtensionCount = mRequiredExtensionNames.size();
     info.ppEnabledExtensionNames = mRequiredExtensionNames.data();
-}
 
-bool VulkanInstance::SetupExtensions(){
-
-    SetRequiredExtensions();
-
-    uint glfwExtensionCount;
-    mGlfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    for(uint i = 0; i < glfwExtensionCount; ++i)
-    {
-        mRequiredExtensionNames.emplace_back(mGlfwExtensions[i]);
+    if(ENABLE_VALIDATION_LAYERS){
+        info.enabledLayerCount = mRequiredLayerNames.size();
+        info.ppEnabledLayerNames = mRequiredLayerNames.data();
     }
-
-    uint32_t extensionCount;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-    mExtensions.resize(extensionCount);
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, mExtensions.data());
-
-    int supportedExt = 0;
-
-    for(uint32_t i = 0; i < mRequiredExtensionNames.size(); ++i){
-        for(const auto& ext : mExtensions){
-            if(strcmp(ext.extensionName, mRequiredExtensionNames[i]) == 0){
-                supportedExt++;
-                fmt::print("Extension supported: {}\n", ext.extensionName);
-                break;
-            }
-        }
+    else{
+        info.enabledLayerCount = 0;
+        info.ppEnabledLayerNames = nullptr;
     }
-
-    if(mRequiredExtensionNames.size() != supportedExt){
-        fmt::print("Not all glfw extensions supported\n");
-        return false;
-    }
-
-    fmt::print("All Required Extensions Supported\n");
-
-    return true;
-}
-
-void VulkanInstance::SetRequiredExtensions(){
-    //Set Requried Extensions here dont include GLFW extensions // GLFW以外の必須拡張をここで設定してください
-    mRequiredExtensionNames = { "VK_EXT_debug_utils" };
 }

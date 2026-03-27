@@ -8,3 +8,8 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
+#include <fstream>
+#include <limits>
+#include <map>
+#include <string>

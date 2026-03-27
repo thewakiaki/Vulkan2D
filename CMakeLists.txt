@@ -19,11 +19,14 @@ find_package(fmt REQUIRED)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    src/ErrorChecking.cpp
+    src/utilSrc/ErrorChecking.cpp
+    src/utilSrc/VulkanHelpers/RequirementCheck.cpp
+    src/utilSrc/VulkanHelpers/PDDetailExtraction.cpp
     src/Game.cpp
     src/GameWindow.cpp
     src/VulkanCore.cpp
     src/VulkanComponents/VulkanInstance.cpp
+    src/VulkanComponents/VulkanPD.cpp
 )
 
 set(PCH_INCLUDE_HEADERS pch.h)

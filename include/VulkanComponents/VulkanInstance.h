@@ -5,10 +5,12 @@
 class VulkanInstance : private ClassUtilities::ImmutableOwner<VulkanInstance>{
 
 public:
-    VulkanInstance();
+    VulkanInstance(std::vector<const char*>& requiredExt, std::vector<const char*>& requiredLay);
     ~VulkanInstance();
 
     bool SetupInstance();
+
+    const VkInstance& GetInstance() const { return mInstance; }
 
 private:
     void SetAppInfo(VkApplicationInfo& info);
@@ -19,8 +21,6 @@ private:
 
     VkInstance mInstance;
 
-    const char** mGlfwExtensions;
-
-    std::vector<VkExtensionProperties> mExtensions;
-    std::vector<const char*> mRequiredExtensionNames;
+    std::vector<const char*>& mRequiredExtensionNames;
+    const std::vector<const char*>& mRequiredLayerNames;
 };
