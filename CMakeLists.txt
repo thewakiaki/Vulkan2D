@@ -22,14 +22,16 @@ add_executable(${PROJECT_NAME}
     src/utilSrc/ErrorChecking.cpp
     src/utilSrc/VulkanHelpers/RequirementCheck.cpp
     src/utilSrc/VulkanHelpers/PDDetailExtraction.cpp
+    src/utilSrc/VulkanHelpers/SwapchainHelper.cpp
     src/utilSrc/VulkanHelpers/CreateInfoHelper.cpp
     src/Game.cpp
     src/GameWindow.cpp
     src/VulkanCore.cpp
     src/VulkanComponents/VulkanInstance.cpp
+    src/VulkanComponents/VulkanSurface.cpp
     src/VulkanComponents/VulkanPD.cpp
     src/VulkanComponents/VulkanLD.cpp
-    src/VulkanComponents/VulkanSurface.cpp
+    src/VulkanComponents/VulkanSC.cpp
 )
 
 set(PCH_INCLUDE_HEADERS pch.h)

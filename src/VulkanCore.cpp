@@ -4,6 +4,7 @@
 #include "VulkanComponents/VulkanSurface.h"
 #include "VulkanComponents/VulkanPD.h"
 #include "VulkanComponents/VulkanLD.h"
+#include "VulkanComponents/VulkanSC.h"
 
 VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
 
@@ -13,10 +14,12 @@ VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
     mSurface = std::make_unique<VulkanSurface>(*mInstance, mGameWindow);
     mPhysicalDevice = std::make_unique<VulkanPD>(*mInstance, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures, *mSurface);
     mLogicalDevice = std::make_unique<VulkanLD>(*mPhysicalDevice, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures);
+    mSwapchain = std::make_unique<VulkanSC>(*mLogicalDevice, *mPhysicalDevice, *mSurface, mGameWindow);
 }
 
 VulkanCore::~VulkanCore(){
 
+    mSwapchain.reset();
     mLogicalDevice.reset();
     mPhysicalDevice.reset();
     mSurface.reset();
@@ -34,6 +37,8 @@ bool VulkanCore::InitVulkan(){
     if(!mPhysicalDevice->SelectPhysicalDevice()) { return false; }
 
     if(!mLogicalDevice->SetupLogicalDevice()) { return false; }
+
+    if(!mSwapchain->SetupSwapchain()) { return false; }
 
 
     return true;

@@ -36,6 +36,8 @@ bool VulkanLD::SetupLogicalDevice(){
     queueCreateInfos.emplace_back(CIHelp::SetLDQueueCretateInfo(mPhysicalDevice.GetSelectedDevice(), FamilyType::GRAPHICS_FAMILY));
 
     if(!mPhysicalDevice.GetSelectedDevice().presentInGraphicsQueue) {
+
+        fmt::print("Present Index not the same as Graphics. Adding Present Queue Info\n");
         queueCreateInfos.emplace_back(CIHelp::SetLDQueueCretateInfo(mPhysicalDevice.GetSelectedDevice(), FamilyType::PRESENT_FAMILY));
     }
 

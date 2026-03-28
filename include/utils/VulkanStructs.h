@@ -38,6 +38,8 @@ namespace VulkanStructs{
         size_t graphicsFamilyIndex = NO_FAMILY_INDEX;
         size_t presentQueueIndex = NO_FAMILY_INDEX;
 
+        std::vector<uint32_t> queueIndices;
+
         PDDetails(VkPhysicalDevice device = VK_NULL_HANDLE) : pDevice(device){}
     };
 

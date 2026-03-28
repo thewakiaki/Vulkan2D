@@ -16,6 +16,19 @@ namespace VulkanHelpers {
         bool TargetAPISupported(const VulkanStructs::PDDetails& device);
     }
 
+    namespace CreateInfoHelper{
+
+        VkDeviceQueueCreateInfo SetLDQueueCretateInfo(const VulkanStructs::PDDetails& pDeviceDetails, FamilyType type);
+        VkDeviceCreateInfo SetLDCreateInfo(const VkPhysicalDeviceFeatures2& features,
+                                            const std::vector<const char*>& ext, const std::vector<VkDeviceQueueCreateInfo>& queueInfo);
+
+        VkSwapchainCreateInfoKHR SetSCCreateInfo(const VkSurfaceKHR& surface, const uint32_t& minImageCount, const VkSurfaceFormatKHR& format,
+                                                    const VkExtent2D& extent, const VkPresentModeKHR& presentMode,
+                                                    const VkSurfaceCapabilitiesKHR& capabilities, const VulkanStructs::PDDetails& pDeviceDetails);
+        VkImageViewCreateInfo SetIVCreateInfo(const VkImage& image, const VkSurfaceFormatKHR& format);
+
+    }
+
     namespace PDDetailExtraction{
 
         VkPhysicalDeviceProperties GetPDProperties(const VkPhysicalDevice& device);
@@ -27,12 +40,8 @@ namespace VulkanHelpers {
 
     }
 
-    namespace CreateInfoHelper{
+    namespace SwapchainHelper {
 
-        VkDeviceQueueCreateInfo SetLDQueueCretateInfo(const VulkanStructs::PDDetails& pDeviceDetails, FamilyType type);
-        VkDeviceCreateInfo SetLDCreateInfo(const VkPhysicalDeviceFeatures2& features,
-                                            const std::vector<const char*>& ext, const std::vector<VkDeviceQueueCreateInfo>& queueInfo);
-
+        VkExtent2D SetSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
     }
-
 }

@@ -61,7 +61,11 @@ size_t VulkanHelpers::PDDetailExtraction::GetPresentQueueIndex(VulkanStructs::PD
         VkBool32 presentSupport = VK_FALSE;
         vkGetPhysicalDeviceSurfaceSupportKHR(deviceDetails.pDevice, i, surface, &presentSupport);
 
-        if(presentSupport) { return i; }
+        if(presentSupport) {
+            deviceDetails.queueIndices.emplace_back(deviceDetails.graphicsFamilyIndex);
+            deviceDetails.queueIndices.emplace_back(i);
+            return i;
+        }
     }
 
     return NO_FAMILY_INDEX;

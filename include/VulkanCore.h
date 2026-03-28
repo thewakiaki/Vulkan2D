@@ -7,6 +7,7 @@ class VulkanInstance;
 class VulkanSurface;
 class VulkanPD;
 class VulkanLD;
+class VulkanSC;
 
 class VulkanCore : private ClassUtilities::ImmutableOwner<VulkanCore>{
 
@@ -16,8 +17,6 @@ public:
 
     bool InitVulkan();
 
-    VulkanStructs::VulkanRequirements& GetVulkanRequirements() { return this->mVulkanRequirements; }
-
 private:
     void SetRequirements();
     void AddGlfwExtensions(std::vector<const char*>& required);
@@ -26,6 +25,7 @@ private:
     std::unique_ptr<VulkanSurface> mSurface;
     std::unique_ptr<VulkanPD> mPhysicalDevice;
     std::unique_ptr<VulkanLD> mLogicalDevice;
+    std::unique_ptr<VulkanSC> mSwapchain;
 
     VulkanStructs::VulkanRequirements mVulkanRequirements;
 

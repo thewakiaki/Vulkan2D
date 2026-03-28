@@ -13,3 +13,5 @@
 #include <limits>
 #include <map>
 #include <string>
+#include <cstdint>
+#include <algorithm>
