@@ -29,6 +29,7 @@ add_executable(${PROJECT_NAME}
     src/VulkanComponents/VulkanInstance.cpp
     src/VulkanComponents/VulkanPD.cpp
     src/VulkanComponents/VulkanLD.cpp
+    src/VulkanComponents/VulkanSurface.cpp
 )
 
 set(PCH_INCLUDE_HEADERS pch.h)

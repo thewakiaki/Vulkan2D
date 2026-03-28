@@ -3,11 +3,13 @@
 #include "utils/VulkanStructs.h"
 
 class VulkanInstance;
+class VulkanSurface;
 
 class VulkanPD : private ClassUtilities::ImmutableOwner<VulkanPD>{
 
 public:
-    VulkanPD(const VulkanInstance& instance, const std::vector<const char*>& requiredExt, const VulkanStructs::DeviceFeatures& reqFeat);
+    VulkanPD(const VulkanInstance& instance, const std::vector<const char*>& requiredExt,
+                const VulkanStructs::DeviceFeatures& reqFeat, const VulkanSurface& surface);
     ~VulkanPD();
 
     bool SelectPhysicalDevice();
@@ -26,6 +28,7 @@ private:
     VulkanStructs::PDDetails mSelectedDevice;
 
     const VulkanInstance& mInstance;
+    const VulkanSurface& mSurface;
     const std::vector<const char*>& mRequiredDeviceExtensions;
     const VulkanStructs::DeviceFeatures& mRequiredDeviceFeatures;
 };

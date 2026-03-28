@@ -1,6 +1,8 @@
 #include "VulkanComponents/VulkanLD.h"
 
 #include "utils/VulkanStructs.h"
+#include "utils/VulkanEnums.h"
+
 #include "utils/VulkanHelpers.h"
 #include "utils/ErrorChecking.h"
 #include "VulkanComponents/VulkanPD.h"
@@ -29,9 +31,15 @@ bool VulkanLD::SetupLogicalDevice(){
 
     EnableDeviceFeatures(mRequiredDeviceFeatures);
 
-    VkDeviceQueueCreateInfo queueCreateInfo = CIHelp::SetLDQueueCretateInfo(mPhysicalDevice.GetSelectedDevice());
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
-    VkDeviceCreateInfo deviceCreateInfo = std::move(CIHelp::SetLDCreateInfo(mRequiredDeviceFeatures.features2, mRequiredDeviceExtensions, queueCreateInfo));
+    queueCreateInfos.emplace_back(CIHelp::SetLDQueueCretateInfo(mPhysicalDevice.GetSelectedDevice(), FamilyType::GRAPHICS_FAMILY));
+
+    if(!mPhysicalDevice.GetSelectedDevice().presentInGraphicsQueue) {
+        queueCreateInfos.emplace_back(CIHelp::SetLDQueueCretateInfo(mPhysicalDevice.GetSelectedDevice(), FamilyType::PRESENT_FAMILY));
+    }
+
+    VkDeviceCreateInfo deviceCreateInfo = std::move(CIHelp::SetLDCreateInfo(mRequiredDeviceFeatures.features2, mRequiredDeviceExtensions, queueCreateInfos));
 
     VkResult result = vkCreateDevice(mPhysicalDevice.GetSelectedDevice().pDevice, &deviceCreateInfo, nullptr, &mLogicalDevice);
 

@@ -21,6 +21,7 @@ VulkanInstance::~VulkanInstance(){
 bool VulkanInstance::SetupInstance(){
 
     fmt::print("----------------------------------\n");
+    fmt::print("Setting up Instance\n");
 
     VkApplicationInfo appInfo{};
     VkInstanceCreateInfo instanceInfo{};

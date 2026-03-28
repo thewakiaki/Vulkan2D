@@ -1,9 +1,13 @@
 #include "VulkanComponents/VulkanPD.h"
-#include "VulkanComponents/VulkanInstance.h"
 #include "utils/VulkanHelpers.h"
 
-VulkanPD::VulkanPD(const VulkanInstance& instance, const std::vector<const char*>& requiredExt, const VulkanStructs::DeviceFeatures& reqFeat)
-                    : mInstance(instance), mRequiredDeviceExtensions(requiredExt), mRequiredDeviceFeatures(reqFeat){
+#include "VulkanComponents/VulkanInstance.h"
+#include "VulkanComponents/VulkanSurface.h"
+
+VulkanPD::VulkanPD(const VulkanInstance& instance, const std::vector<const char*>& requiredExt,
+                    const VulkanStructs::DeviceFeatures& reqFeat, const VulkanSurface& surface)
+                    : mInstance(instance), mRequiredDeviceExtensions(requiredExt), mRequiredDeviceFeatures(reqFeat), mSurface(surface){
+
     mSelectedDevice = VulkanStructs::PDDetails();
 }
 
@@ -72,7 +76,8 @@ void VulkanPD::GetAvailableDevices(std::vector<VulkanStructs::PDDetails>& availa
         VulkanStructs::PDDetails details = VulkanStructs::PDDetails(device);
         details.properties = VulkanHelpers::PDDetailExtraction::GetPDProperties(device);
         details.queueFamilyPropeties = VulkanHelpers::PDDetailExtraction::GetPDQueueProperties(device);
-        details.graphicsFamilyIndex = VulkanHelpers::PDDetailExtraction::GetGraphicsQueueIndex(details);
+        details.graphicsFamilyIndex = VulkanHelpers::PDDetailExtraction::GetGraphicsQueueIndex(details, mSurface.GetSurface());
+        details.presentQueueIndex = VulkanHelpers::PDDetailExtraction::GetPresentQueueIndex(details, mSurface.GetSurface());
         details.extensionsProperties = VulkanHelpers::PDDetailExtraction::GetPDExtensionProperties(device);
         VulkanHelpers::PDDetailExtraction::GetSupportedFeatures(details);
         available.emplace_back(details);

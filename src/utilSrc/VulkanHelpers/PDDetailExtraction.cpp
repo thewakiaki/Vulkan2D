@@ -33,12 +33,35 @@ void VulkanHelpers::PDDetailExtraction::GetSupportedFeatures(VulkanStructs::PDDe
     vkGetPhysicalDeviceFeatures2(deviceDetails.pDevice, &deviceDetails.supportedFeatures.features2);
 }
 
-size_t VulkanHelpers::PDDetailExtraction::GetGraphicsQueueIndex(VulkanStructs::PDDetails &deviceDetails){
+size_t VulkanHelpers::PDDetailExtraction::GetGraphicsQueueIndex(VulkanStructs::PDDetails &deviceDetails, const VkSurfaceKHR& surface){
 
     for(size_t i = 0; i < deviceDetails.queueFamilyPropeties.size(); ++i){
         if((deviceDetails.queueFamilyPropeties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0){
+
+            VkBool32 presentSupport = VK_FALSE;
+            vkGetPhysicalDeviceSurfaceSupportKHR(deviceDetails.pDevice, i, surface, &presentSupport);
+
+            if(presentSupport) { deviceDetails.presentInGraphicsQueue = true; }
+
             return i;
         }
+    }
+
+    return NO_FAMILY_INDEX;
+}
+
+size_t VulkanHelpers::PDDetailExtraction::GetPresentQueueIndex(VulkanStructs::PDDetails &deviceDetails, const VkSurfaceKHR &surface){
+
+    if(deviceDetails.presentInGraphicsQueue) { return deviceDetails.graphicsFamilyIndex; }
+
+    for(size_t i = 0; i < deviceDetails.queueFamilyPropeties.size(); ++i){
+
+        if(i == deviceDetails.graphicsFamilyIndex) { continue; }
+
+        VkBool32 presentSupport = VK_FALSE;
+        vkGetPhysicalDeviceSurfaceSupportKHR(deviceDetails.pDevice, i, surface, &presentSupport);
+
+        if(presentSupport) { return i; }
     }
 
     return NO_FAMILY_INDEX;

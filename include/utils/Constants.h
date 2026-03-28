@@ -7,6 +7,8 @@ constexpr bool ENABLE_VALIDATION_LAYERS = true;
 
 constexpr size_t MAX_FRAMES_IN_FLIGHT = 2;
 
+constexpr float QUEUE_PRIORITY = 0.5f;
+
 constexpr const char* REQUIRED_VALIDATION_LAYERS[] = {
     "VK_LAYER_KHRONOS_validation"
 };

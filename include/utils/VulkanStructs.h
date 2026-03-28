@@ -33,6 +33,8 @@ namespace VulkanStructs{
 
         int score = 0;
 
+        bool presentInGraphicsQueue = false;
+
         size_t graphicsFamilyIndex = NO_FAMILY_INDEX;
         size_t presentQueueIndex = NO_FAMILY_INDEX;
 

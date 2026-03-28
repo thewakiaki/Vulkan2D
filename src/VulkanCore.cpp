@@ -1,15 +1,17 @@
 #include "VulkanCore.h"
 
 #include "VulkanComponents/VulkanInstance.h"
+#include "VulkanComponents/VulkanSurface.h"
 #include "VulkanComponents/VulkanPD.h"
 #include "VulkanComponents/VulkanLD.h"
 
-VulkanCore::VulkanCore(const GameWindow& window) : mGameWindow(window) {
+VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
 
     SetRequirements();
 
     mInstance = std::make_unique<VulkanInstance>(mVulkanRequirements.requiredInstanceExtensions, mVulkanRequirements.requiredValidationLayers);
-    mPhysicalDevice = std::make_unique<VulkanPD>(*mInstance, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures);
+    mSurface = std::make_unique<VulkanSurface>(*mInstance, mGameWindow);
+    mPhysicalDevice = std::make_unique<VulkanPD>(*mInstance, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures, *mSurface);
     mLogicalDevice = std::make_unique<VulkanLD>(*mPhysicalDevice, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures);
 }
 
@@ -17,18 +19,22 @@ VulkanCore::~VulkanCore(){
 
     mLogicalDevice.reset();
     mPhysicalDevice.reset();
+    mSurface.reset();
     mInstance.reset();
 }
 
 bool VulkanCore::InitVulkan(){
 
+    fmt::print("Initialising Vulkan\n");
+
     if(!mInstance->SetupInstance()) { return false; }
+
+    if(!mSurface->SetupSurface()) { return false; }
 
     if(!mPhysicalDevice->SelectPhysicalDevice()) { return false; }
 
     if(!mLogicalDevice->SetupLogicalDevice()) { return false; }
 
-    fmt::print("Initialising Vulkan\n");
 
     return true;
 }
