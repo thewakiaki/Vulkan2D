@@ -72,7 +72,7 @@ void VulkanPD::GetAvailableDevices(std::vector<VulkanStructs::PDDetails>& availa
         VulkanStructs::PDDetails details = VulkanStructs::PDDetails(device);
         details.properties = VulkanHelpers::PDDetailExtraction::GetPDProperties(device);
         details.queueFamilyPropeties = VulkanHelpers::PDDetailExtraction::GetPDQueueProperties(device);
-        details.graphicsQueueIndex = VulkanHelpers::PDDetailExtraction::GetGraphicsQueueIndex(details);
+        details.graphicsFamilyIndex = VulkanHelpers::PDDetailExtraction::GetGraphicsQueueIndex(details);
         details.extensionsProperties = VulkanHelpers::PDDetailExtraction::GetPDExtensionProperties(device);
         VulkanHelpers::PDDetailExtraction::GetSupportedFeatures(details);
         available.emplace_back(details);

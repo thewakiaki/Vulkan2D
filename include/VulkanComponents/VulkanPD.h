@@ -12,6 +12,8 @@ public:
 
     bool SelectPhysicalDevice();
 
+    const VulkanStructs::PDDetails& GetSelectedDevice() const { return mSelectedDevice; }
+
 private:
     void GetAvailableDevices(std::vector<VulkanStructs::PDDetails>& available);
 

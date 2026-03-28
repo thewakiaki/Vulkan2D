@@ -25,4 +25,12 @@ namespace VulkanHelpers {
 
     }
 
+    namespace CreateInfoHelper{
+
+        VkDeviceQueueCreateInfo SetLDQueueCretateInfo(const VulkanStructs::PDDetails& pDeviceDetails);
+        VkDeviceCreateInfo SetLDCreateInfo(const VkPhysicalDeviceFeatures2& features,
+                                            const std::vector<const char*>& ext, const VkDeviceQueueCreateInfo& queueInfo);
+
+    }
+
 }

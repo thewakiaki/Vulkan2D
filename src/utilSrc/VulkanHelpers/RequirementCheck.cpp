@@ -98,6 +98,13 @@ bool VulkanHelpers::RequirementCheck::RequiredFeaturesSupported(const VulkanStru
 
     fmt::print("Feature Supported: Dynamic Rendering\n");
 
+    if(required.vulkan13Features.synchronization2 && !device.supportedFeatures.vulkan13Features.synchronization2){
+        fmt::print("Feature Not Supported: Synchronization 2\n");
+        return false;
+    }
+
+    fmt::print("Feature Supported: Synchronization 2\n");
+
     if(required.extDynState.extendedDynamicState && !device.supportedFeatures.extDynState.extendedDynamicState){
         fmt::print("Feature Not Supported: Extened Dynamic State \n");
         return false;

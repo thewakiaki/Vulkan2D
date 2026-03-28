@@ -5,6 +5,7 @@
 class GameWindow;
 class VulkanInstance;
 class VulkanPD;
+class VulkanLD;
 
 class VulkanCore : private ClassUtilities::ImmutableOwner<VulkanCore>{
 
@@ -22,6 +23,7 @@ private:
 
     std::unique_ptr<VulkanInstance> mInstance;
     std::unique_ptr<VulkanPD> mPhysicalDevice;
+    std::unique_ptr<VulkanLD> mLogicalDevice;
 
     VulkanStructs::VulkanRequirements mVulkanRequirements;
 

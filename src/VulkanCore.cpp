@@ -2,6 +2,7 @@
 
 #include "VulkanComponents/VulkanInstance.h"
 #include "VulkanComponents/VulkanPD.h"
+#include "VulkanComponents/VulkanLD.h"
 
 VulkanCore::VulkanCore(const GameWindow& window) : mGameWindow(window) {
 
@@ -9,10 +10,12 @@ VulkanCore::VulkanCore(const GameWindow& window) : mGameWindow(window) {
 
     mInstance = std::make_unique<VulkanInstance>(mVulkanRequirements.requiredInstanceExtensions, mVulkanRequirements.requiredValidationLayers);
     mPhysicalDevice = std::make_unique<VulkanPD>(*mInstance, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures);
+    mLogicalDevice = std::make_unique<VulkanLD>(*mPhysicalDevice, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures);
 }
 
 VulkanCore::~VulkanCore(){
 
+    mLogicalDevice.reset();
     mPhysicalDevice.reset();
     mInstance.reset();
 }
@@ -22,6 +25,8 @@ bool VulkanCore::InitVulkan(){
     if(!mInstance->SetupInstance()) { return false; }
 
     if(!mPhysicalDevice->SelectPhysicalDevice()) { return false; }
+
+    if(!mLogicalDevice->SetupLogicalDevice()) { return false; }
 
     fmt::print("Initialising Vulkan\n");
 

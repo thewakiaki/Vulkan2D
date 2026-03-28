@@ -29,10 +29,8 @@ std::vector<VkQueueFamilyProperties> VulkanHelpers::PDDetailExtraction::GetPDQue
 }
 
 void VulkanHelpers::PDDetailExtraction::GetSupportedFeatures(VulkanStructs::PDDetails& deviceDetails){
-    deviceDetails.supportedFeatures.vulkan13Features.pNext = &deviceDetails.supportedFeatures.extDynState;
-    deviceDetails.supportedFeatures.features2.pNext = &deviceDetails.supportedFeatures.vulkan13Features;
 
-    vkGetPhysicalDeviceFeatures2(deviceDetails.pDevice, deviceDetails.supportedFeatures.GetFeatures());
+    vkGetPhysicalDeviceFeatures2(deviceDetails.pDevice, &deviceDetails.supportedFeatures.features2);
 }
 
 size_t VulkanHelpers::PDDetailExtraction::GetGraphicsQueueIndex(VulkanStructs::PDDetails &deviceDetails){
