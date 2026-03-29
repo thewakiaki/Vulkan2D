@@ -17,9 +17,38 @@ find_package(SDL3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(fmt REQUIRED)
 
+find_program(GLSL_VALIDATOR glslangValidator HINTS $ENV{VULKAN_SDK}/bin)
+
+set(SHADER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Assets/Shaders")
+set(SHADER_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/Assets/Compiled/Shaders")
+
+set(SHADER_SOURCES
+    "${SHADER_SOURCE_DIR}/vert.glsl"
+    "${SHADER_SOURCE_DIR}/frag.glsl"
+)
+
+foreach(SHADER_SOURCE ${SHADER_SOURCES})
+    get_filename_component(FILE_NAME ${SHADER_SOURCE} NAME_WE)
+    set(SPV_OUTPUT "${SHADER_OUTPUT_DIR}/${FILE_NAME}.spv")
+
+    add_custom_command(
+        OUTPUT ${SPV_OUTPUT}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${SHADER_OUTPUT_DIR}
+        COMMAND ${GLSL_VALIDATOR} -V -S ${FILE_NAME} ${SHADER_SOURCE} -o ${SPV_OUTPUT}
+        DEPENDS ${SHADER_SOURCE}
+        COMMENT "GLSL → SPIR-V: ${FILE_NAME}.glsl"
+        VERBATIM
+    )
+
+    list(APPEND SPV_SHADERS ${SPV_OUTPUT})
+endforeach()
+
+add_custom_target(Shaders ALL DEPENDS ${SPV_SHADERS})
+
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/utilSrc/ErrorChecking.cpp
+    src/utilSrc/FileHandling.cpp
     src/utilSrc/VulkanHelpers/RequirementCheck.cpp
     src/utilSrc/VulkanHelpers/PDDetailExtraction.cpp
     src/utilSrc/VulkanHelpers/SwapchainHelper.cpp
@@ -32,7 +61,10 @@ add_executable(${PROJECT_NAME}
     src/VulkanComponents/VulkanPD.cpp
     src/VulkanComponents/VulkanLD.cpp
     src/VulkanComponents/VulkanSC.cpp
+    src/VulkanComponents/VulkanSM.cpp
 )
+
+add_dependencies(${PROJECT_NAME} Shaders)
 
 set(PCH_INCLUDE_HEADERS pch.h)
 target_precompile_headers(${PROJECT_NAME} PRIVATE ${PCH_INCLUDE_HEADERS})

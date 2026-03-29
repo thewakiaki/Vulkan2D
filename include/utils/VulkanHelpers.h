@@ -27,6 +27,8 @@ namespace VulkanHelpers {
                                                     const VkSurfaceCapabilitiesKHR& capabilities, const VulkanStructs::PDDetails& pDeviceDetails);
         VkImageViewCreateInfo SetIVCreateInfo(const VkImage& image, const VkSurfaceFormatKHR& format);
 
+        VkShaderModuleCreateInfo SetSMCreateInfo(const std::vector<char>& fileData);
+
     }
 
     namespace PDDetailExtraction{

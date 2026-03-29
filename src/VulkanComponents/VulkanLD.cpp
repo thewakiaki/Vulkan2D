@@ -19,9 +19,10 @@ VulkanLD::~VulkanLD(){
     if(mLogicalDevice != VK_NULL_HANDLE){
         vkDestroyDevice(mLogicalDevice, nullptr);
         mLogicalDevice = VK_NULL_HANDLE;
+        fmt::print("Logical Device Destroyed\n");
     }
 
-    fmt::print("Logical Device Destroyed\n");
+
 }
 
 bool VulkanLD::SetupLogicalDevice(){

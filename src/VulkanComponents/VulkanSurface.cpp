@@ -15,9 +15,10 @@ VulkanSurface::~VulkanSurface(){
     if(mSurface != VK_NULL_HANDLE){
         vkDestroySurfaceKHR(mInstance.GetInstance(), mSurface, nullptr);
         mSurface = VK_NULL_HANDLE;
+        fmt::print("Surface Destroyed\n");
     }
 
-    fmt::print("Surface Destroyed\n");
+
 }
 
 bool VulkanSurface::SetupSurface(){

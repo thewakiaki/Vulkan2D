@@ -89,3 +89,17 @@ VkImageViewCreateInfo CIHelp::SetIVCreateInfo(const VkImage &image, const VkSurf
 
     return info;
 }
+
+VkShaderModuleCreateInfo CIHelp::SetSMCreateInfo(const std::vector<char>& fileData){
+
+    VkShaderModuleCreateInfo info{
+        .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO
+    };
+
+    info.pNext = nullptr;
+    info.flags = 0;
+    info.codeSize = fileData.size();
+    info.pCode = reinterpret_cast<const uint32_t*>(fileData.data());
+
+    return info;
+}
