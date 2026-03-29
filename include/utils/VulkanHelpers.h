@@ -27,8 +27,28 @@ namespace VulkanHelpers {
                                                     const VkSurfaceCapabilitiesKHR& capabilities, const VulkanStructs::PDDetails& pDeviceDetails);
         VkImageViewCreateInfo SetIVCreateInfo(const VkImage& image, const VkSurfaceFormatKHR& format);
 
-        VkShaderModuleCreateInfo SetSMCreateInfo(const std::vector<char>& fileData);
+        VkShaderModuleCreateInfo SetSMCreateInfo(const std::vector<uint32_t>& fileData);
 
+        VkPipelineShaderStageCreateInfo SetPiplineSMCreateInfo(const VkShaderModule& module, ShaderType type);
+        std::vector<VkPipelineShaderStageCreateInfo> CombineShaderStageInfos(const std::vector<VkPipelineShaderStageCreateInfo>& vert,
+                                                                             const std::vector<VkPipelineShaderStageCreateInfo>& frag);
+        VkPipelineDynamicStateCreateInfo SetDynamicStateCI();
+        VkPipelineVertexInputStateCreateInfo SetVertInputStateCI();
+        VkPipelineInputAssemblyStateCreateInfo SetInputAssemblyStateCI();
+        VkPipelineViewportStateCreateInfo SetViewportStateCI(const VkViewport& viewport, const VkRect2D& scissor);
+        VkPipelineRasterizationStateCreateInfo SetRasterStateCI();
+        VkPipelineMultisampleStateCreateInfo SetMultisampleCI();
+        VkPipelineDepthStencilStateCreateInfo SetDepthStencilCI();
+        VkPipelineColorBlendAttachmentState SetColorBlendAS();
+        VkPipelineColorBlendStateCreateInfo SetColorBlendCI(const VkPipelineColorBlendAttachmentState& attachState);
+        VkPipelineLayoutCreateInfo SetPipelineLayoutCI();
+        VkPipelineRenderingCreateInfo SetRenderingCI(const VkFormat& format);
+
+        VkGraphicsPipelineCreateInfo SetGraphicsPipelineCI(const VkPipelineRenderingCreateInfo& renderCI, const VkPipelineInputAssemblyStateCreateInfo& inputACI,
+            const std::vector<VkPipelineShaderStageCreateInfo>& shaderStageCI, const VkPipelineDynamicStateCreateInfo& dynamicStateCI,
+            const VkPipelineVertexInputStateCreateInfo& vertInputCI, const VkPipelineViewportStateCreateInfo& viewportCI,
+            const VkPipelineRasterizationStateCreateInfo& rasterCI, const VkPipelineMultisampleStateCreateInfo& multisampleCI,
+            const VkPipelineDepthStencilStateCreateInfo& depthStencilCI, const VkPipelineColorBlendStateCreateInfo& colorBlendCI, const VkPipelineLayout& layout);
     }
 
     namespace PDDetailExtraction{

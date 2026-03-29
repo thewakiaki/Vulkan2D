@@ -62,6 +62,7 @@ add_executable(${PROJECT_NAME}
     src/VulkanComponents/VulkanLD.cpp
     src/VulkanComponents/VulkanSC.cpp
     src/VulkanComponents/VulkanSM.cpp
+    src/VulkanComponents/VulkanGP.cpp
 )
 
 add_dependencies(${PROJECT_NAME} Shaders)

@@ -8,18 +8,12 @@
 
 namespace CIHelp = VulkanHelpers::CreateInfoHelper;
 
-VulkanSM::VulkanSM(const VulkanLD& lDevice) : mLogicalDevice(lDevice){
+VulkanSM::VulkanSM(const VulkanLD& lDevice, ShaderType type) : mLogicalDevice(lDevice), mType(type){
 
 }
 
 VulkanSM::~VulkanSM(){
-
-    if (mShaderModule != VK_NULL_HANDLE) {
-
-        vkDestroyShaderModule(mLogicalDevice.GetLogicalDevice(), mShaderModule, nullptr);
-        mShaderModule = VK_NULL_HANDLE;
-        fmt::print("Shader Module Destroyed\n");
-    }
+    Cleanup();
 }
 
 bool VulkanSM::SetupShaderModule(const char* filePath){
@@ -27,13 +21,27 @@ bool VulkanSM::SetupShaderModule(const char* filePath){
     fmt::print("----------------------------------\n");
     fmt::print("Setting up Shader Module\n");
 
-    VkShaderModuleCreateInfo createInfo = CIHelp::SetSMCreateInfo(FileHandling::ParseFile(filePath));
+    mFileData = FileHandling::ParseFile(filePath);
+
+    VkShaderModuleCreateInfo createInfo = CIHelp::SetSMCreateInfo(mFileData);
 
     VkResult result = vkCreateShaderModule(mLogicalDevice.GetLogicalDevice(), &createInfo, nullptr, &mShaderModule);
 
     if(!ErrorChecking::VkResultCheck(result, "Shader Module")) { return false; }
 
+
     fmt::print("Shader Module Created\n");
 
     return true;
+}
+
+void VulkanSM::Cleanup(){
+
+    if (mShaderModule != VK_NULL_HANDLE) {
+
+        vkDestroyShaderModule(mLogicalDevice.GetLogicalDevice(), mShaderModule, nullptr);
+        mShaderModule = VK_NULL_HANDLE;
+        mManuallyCleaned = true;
+        fmt::print("Shader Module Destroyed\n");
+    }
 }

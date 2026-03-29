@@ -2,5 +2,5 @@
 
 namespace FileHandling{
 
-    std::vector<char> ParseFile(const char* filePath);
+    std::vector<uint32_t> ParseFile(const char* filePath);
 }
