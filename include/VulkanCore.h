@@ -10,6 +10,7 @@ class VulkanLD;
 class VulkanSC;
 class VulkanGP;
 class VulkanCmdPool;
+class VulkanRenderer;
 
 class VulkanCore : private ClassUtilities::ImmutableOwner<VulkanCore>{
 
@@ -18,6 +19,8 @@ public:
     ~VulkanCore();
 
     bool InitVulkan();
+
+    bool DrawFrame();
 
 private:
     void SetRequirements();
@@ -30,6 +33,7 @@ private:
     std::unique_ptr<VulkanSC> mSwapchain;
     std::unique_ptr<VulkanGP> mGraphicsPipeline;
     std::unique_ptr<VulkanCmdPool> mCommandPool;
+    std::unique_ptr<VulkanRenderer> mRenderer;
 
     VulkanStructs::VulkanRequirements mVulkanRequirements;
 

@@ -7,7 +7,7 @@ class GameWindow;
 class Game : private ClassUtilities::ImmutableOwner<Game>{
 
 public:
-    Game(const VulkanCore& vulkan, const GameWindow& window);
+    Game(VulkanCore& vulkan, GameWindow& window);
     ~Game();
 
     bool StartGame();
@@ -17,6 +17,6 @@ public:
 private:
     bool mPlaying = false;
 
-    const VulkanCore& mVulkan;
-    const GameWindow& mWindow;
+    VulkanCore& mVulkan;
+    GameWindow& mWindow;
 };

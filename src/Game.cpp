@@ -3,7 +3,7 @@
 #include "VulkanCore.h"
 #include "GameWindow.h"
 
-Game::Game(const VulkanCore& vulkan, const GameWindow& window) : mVulkan(vulkan), mWindow(window){
+Game::Game(VulkanCore& vulkan, GameWindow& window) : mVulkan(vulkan), mWindow(window){
 
 }
 
@@ -17,18 +17,27 @@ bool Game::StartGame(){
 
     mPlaying = true;
 
-    //Play();
+    Play();
 
     return true;
 }
 
 void Game::Play(){
 
+    fmt::print("----------------------\n");
+    fmt::print("Game Running\n");
+
     while(mPlaying && !glfwWindowShouldClose(mWindow.GetWindow())){
         glfwPollEvents();
 
         if (glfwGetKey(mWindow.GetWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS){
             mPlaying = false;
+            fmt::print("Escape pressed\n");
         }
+
+        mPlaying = mVulkan.DrawFrame();
+
     }
+
+    fmt::print("Game Ending\n");
 }

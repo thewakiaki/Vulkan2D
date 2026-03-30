@@ -57,6 +57,13 @@ namespace VulkanHelpers {
         VkDependencyInfo SetDependencyInfo(const VkImageMemoryBarrier2& barrier);
         VkRenderingAttachmentInfo SetRenderAttachInfo(const VkImageView& imageView);
         VkRenderingInfo SetRenderingInfo(const VkRenderingAttachmentInfo& attach, const VkExtent2D& swapExtent);
+
+        VkSemaphoreCreateInfo SetSemaphoreInfo();
+        VkFenceCreateInfo SetFenceInfo(size_t fenceIndex);
+        VkPipelineStageFlags SetWaitDstStageMask();
+        VkSubmitInfo SetSubmitInfo(const VkPipelineStageFlags& dstStgMask, const VulkanStructs::SyncObjects& sync,
+                                        const std::array<VkCommandBuffer, MAX_FRAMES_IN_FLIGHT>& buffer, const uint32_t& fif, const uint32_t& imageIndex);
+        VkPresentInfoKHR SetPresentInfo(const VkSwapchainKHR& swapchain, const VulkanStructs::SyncObjects& sync, const uint32_t& imageIndex);
     }
 
     namespace PDDetailExtraction{

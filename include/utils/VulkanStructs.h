@@ -61,4 +61,12 @@ namespace VulkanStructs{
         VkPipelineStageFlags2 srcStageMask;
         VkPipelineStageFlags2 dstStageMask;
     };
+
+    struct SyncObjects{
+
+        std::vector<VkSemaphore> renderFinishedSemaphores;
+        std::array<VkSemaphore, MAX_FRAMES_IN_FLIGHT> presentCompleteSemaphores { VK_NULL_HANDLE };
+        std::array<VkFence, MAX_FRAMES_IN_FLIGHT> drawFences { VK_NULL_HANDLE };
+
+    };
 }

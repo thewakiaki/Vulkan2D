@@ -204,15 +204,15 @@ bool VulkanSC::SetSCImageViews(){
 
     mImageViews.resize(mImages.size());
 
-    for(const VkImage& image : mImages){
+    for(int i = 0; i < mImages.size(); ++i){
         VkImageView imageView;
 
-        VkImageViewCreateInfo info = CIHelp::SetIVCreateInfo(image, mSelectedFormat);
+        VkImageViewCreateInfo info = CIHelp::SetIVCreateInfo(mImages[i], mSelectedFormat);
         VkResult result = vkCreateImageView(mLogicalDevice.GetLogicalDevice(), &info, nullptr, &imageView);
 
         if(!ErrorChecking::VkResultCheck(result, "Image View")) { return false; }
 
-        mImageViews.emplace_back(std::move(imageView));
+        mImageViews[i] = std::move(imageView);
     }
 
     fmt::print("All Image Views Created\n");

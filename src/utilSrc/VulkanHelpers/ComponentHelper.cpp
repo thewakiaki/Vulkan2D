@@ -26,7 +26,7 @@ VulkanStructs::ImageLayout VulkanHelpers::ComponentHelper::SetImageLayout(VkImag
     layout.srcAccessMask = src;
     layout.dstAccessMask = dst;
     layout.srcStageMask = srcStg;
-    layout.dstAccessMask = dstStg;
+    layout.dstStageMask = dstStg;
 
     return layout;
 }

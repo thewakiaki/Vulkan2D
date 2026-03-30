@@ -54,13 +54,11 @@ bool VulkanCmdPool::SetupCommandBuffers(){
 
     VkCommandBufferAllocateInfo allocInfo = CIHelp::SetBufferAllocInfo(mCommandPool);
 
-    mCommandBuffers.resize(1);
-
-    VkResult result = vkAllocateCommandBuffers(mLogicalDevice.GetLogicalDevice(), &allocInfo, &mCommandBuffers[0]);
+    VkResult result = vkAllocateCommandBuffers(mLogicalDevice.GetLogicalDevice(), &allocInfo, mCommandBuffers.data());
 
     if(!ErrorChecking::VkResultCheck(result, "Command Buffer")) { return false; }
 
-    fmt::print("Command Buffers Created\n");
+    fmt::print("Command Buffers:  {} Buffers\n", mCommandBuffers.size());
 
     return true;
 }
@@ -94,7 +92,6 @@ void VulkanCmdPool::RecordCommandBuffer(uint32_t imageIndex){
     TransitionImageLayout(imageIndex, mPostRenderLayout);
 
     vkEndCommandBuffer(mCommandBuffers[0]);
-
 }
 
 void VulkanCmdPool::TransitionImageLayout(uint32_t imageIndex, VulkanStructs::ImageLayout layout){

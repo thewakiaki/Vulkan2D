@@ -20,7 +20,7 @@ public:
     void RecordCommandBuffer(uint32_t imageIndex);
 
     const VkCommandPool& GetCommandPool() const { return mCommandPool; }
-    const std::vector<VkCommandBuffer>& GetCommandBuffer() const { return mCommandBuffers; }
+    const std::array<VkCommandBuffer, MAX_FRAMES_IN_FLIGHT>& GetCommandBuffer() const { return mCommandBuffers; }
 
 private:
 
@@ -28,7 +28,7 @@ private:
 
     VkCommandPool mCommandPool = VK_NULL_HANDLE;
 
-    std::vector<VkCommandBuffer> mCommandBuffers;
+    std::array<VkCommandBuffer, MAX_FRAMES_IN_FLIGHT> mCommandBuffers;
 
     VulkanStructs::ImageLayout mPreRenderLayout;
     VulkanStructs::ImageLayout mPostRenderLayout;

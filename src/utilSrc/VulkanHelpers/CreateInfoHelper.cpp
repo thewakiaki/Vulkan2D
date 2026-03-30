@@ -328,7 +328,7 @@ VkCommandBufferAllocateInfo CIHelp::SetBufferAllocInfo(const VkCommandPool &pool
 
     info.commandPool = pool;
     info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    info.commandBufferCount = 1; //MAX_FRAMES_IN_FLIGHT;
+    info.commandBufferCount = MAX_FRAMES_IN_FLIGHT;
 
     return info;
 }
@@ -344,7 +344,9 @@ VkCommandBufferBeginInfo CIHelp::SetBeginInfo(){
 
 VkImageMemoryBarrier2 CIHelp::SetBarrierInfo(const VulkanStructs::ImageLayout& layout, const VkImage& swapImage){
 
-    VkImageMemoryBarrier2 barrier{};
+    VkImageMemoryBarrier2 barrier{
+        .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2
+    };
 
     barrier.srcStageMask = layout.srcStageMask;
     barrier.srcAccessMask = layout.srcAccessMask;
@@ -402,6 +404,73 @@ VkRenderingInfo CIHelp::SetRenderingInfo(const VkRenderingAttachmentInfo &attach
     info.layerCount = 1;
     info.colorAttachmentCount = 1;
     info.pColorAttachments = &attach;
+
+    return info;
+}
+
+VkSemaphoreCreateInfo CIHelp::SetSemaphoreInfo(){
+
+    VkSemaphoreCreateInfo info{
+        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
+    };
+
+    return info;
+}
+
+VkFenceCreateInfo CIHelp::SetFenceInfo(size_t fenceIndex){
+
+    VkFenceCreateInfo info{
+        .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO
+    };
+
+    if(fenceIndex == 0){
+        info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+    }
+    else{
+        info.flags = 0;
+    }
+
+    return info;
+}
+
+VkPipelineStageFlags CIHelp::SetWaitDstStageMask(){
+
+    VkPipelineStageFlags mask{
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+    };
+
+    return mask;
+}
+
+VkSubmitInfo CIHelp::SetSubmitInfo(const VkPipelineStageFlags &dstStgMask, const VulkanStructs::SyncObjects& sync,
+                                        const std::array<VkCommandBuffer, MAX_FRAMES_IN_FLIGHT>& buffer, const uint32_t& fif, const uint32_t& imageIndex){
+
+    VkSubmitInfo info{
+        .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO
+    };
+
+    info.waitSemaphoreCount = 1;
+    info.pWaitSemaphores = &sync.presentCompleteSemaphores[fif];
+    info.pWaitDstStageMask = &dstStgMask;
+    info.commandBufferCount = 1;
+    info.pCommandBuffers = &buffer[fif];
+    info.signalSemaphoreCount = 1;
+    info.pSignalSemaphores = &sync.renderFinishedSemaphores[imageIndex];
+
+    return info;
+}
+
+VkPresentInfoKHR CIHelp::SetPresentInfo(const VkSwapchainKHR &swapchain, const VulkanStructs::SyncObjects &sync, const uint32_t& imageIndex){
+
+    VkPresentInfoKHR info{
+        .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR
+    };
+
+    info.waitSemaphoreCount = 1;
+    info.pWaitSemaphores = &sync.renderFinishedSemaphores[imageIndex];
+    info.swapchainCount = 1;
+    info.pSwapchains = &swapchain;
+    info.pImageIndices = &imageIndex;
 
     return info;
 }

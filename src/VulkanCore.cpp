@@ -7,6 +7,7 @@
 #include "VulkanComponents/VulkanSC.h"
 #include "VulkanComponents/VulkanGP.h"
 #include "VulkanComponents/VulkanCmdPool.h"
+#include "VulkanComponents/VulkanRenderer.h"
 
 VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
 
@@ -19,10 +20,12 @@ VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
     mSwapchain = std::make_unique<VulkanSC>(*mLogicalDevice, *mPhysicalDevice, *mSurface, mGameWindow);
     mGraphicsPipeline = std::make_unique<VulkanGP>(*mLogicalDevice, *mSwapchain);
     mCommandPool = std::make_unique<VulkanCmdPool>(*mPhysicalDevice, *mLogicalDevice, *mSwapchain, *mGraphicsPipeline);
+    mRenderer = std::make_unique<VulkanRenderer>(*mCommandPool, *mLogicalDevice, *mSwapchain);
 }
 
 VulkanCore::~VulkanCore(){
 
+    mRenderer.reset();
     mCommandPool.reset();
     mGraphicsPipeline.reset();
     mSwapchain.reset();
@@ -52,7 +55,14 @@ bool VulkanCore::InitVulkan(){
 
     if(!mCommandPool->SetupCommandBuffers()) { return false; }
 
+    if(!mRenderer->SetupRenderer()) { return false; }
+
     return true;
+}
+
+bool VulkanCore::DrawFrame(){
+
+    return mRenderer->DrawFrame();
 }
 
 void VulkanCore::SetRequirements(){

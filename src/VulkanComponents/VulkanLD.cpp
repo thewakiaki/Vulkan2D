@@ -78,6 +78,13 @@ bool VulkanLD::SetupQueues(){
         return false;
     }
 
+    vkGetDeviceQueue(mLogicalDevice, mPhysicalDevice.GetSelectedDevice().presentQueueIndex, 0, &mPresentQueue);
+
+    if(mPresentQueue == VK_NULL_HANDLE){
+        fmt::print("Failed To Get Present Queue\n");
+        return false;
+    }
+
     fmt::print("Got All Necessary Queues\n");
 
 

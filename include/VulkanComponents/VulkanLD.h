@@ -18,6 +18,8 @@ public:
 
 
     const VkDevice& GetLogicalDevice() const { return mLogicalDevice; }
+    const VkQueue& GetGraphicsQueue() const { return mGraphicsQueue; }
+    const VkQueue& GetPresentQueue() const { return mPresentQueue; }
 
 private:
     void EnableDeviceFeatures(VulkanStructs::DeviceFeatures& features);
