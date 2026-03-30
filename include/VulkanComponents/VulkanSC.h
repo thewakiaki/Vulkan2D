@@ -20,6 +20,8 @@ public:
     const VkSurfaceFormatKHR& GetSelectedFormat() const { return mSelectedFormat; }
     const VkPresentModeKHR& GetPresentMode() const { return mSelectedPresentMode; }
     const VkExtent2D& GetSwapExtent() const { return mSwapExtent; }
+    const std::vector<VkImage>& GetImages() const { return mImages; }
+    const std::vector<VkImageView>& GetImageViews() const { return mImageViews; }
 
 private:
     bool GetSurfaceCapabilities();

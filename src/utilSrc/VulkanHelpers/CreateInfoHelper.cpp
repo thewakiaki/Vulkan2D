@@ -307,3 +307,101 @@ VkGraphicsPipelineCreateInfo CIHelp::SetGraphicsPipelineCI(const VkPipelineRende
 
     return info;
 }
+
+VkCommandPoolCreateInfo CIHelp::SetCmdPoolCI(const VulkanStructs::PDDetails& pDevice){
+
+    VkCommandPoolCreateInfo info{
+        .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO
+    };
+
+    info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    info.queueFamilyIndex = pDevice.graphicsFamilyIndex;
+
+    return info;
+}
+
+VkCommandBufferAllocateInfo CIHelp::SetBufferAllocInfo(const VkCommandPool &pool){
+
+    VkCommandBufferAllocateInfo info{
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO
+    };
+
+    info.commandPool = pool;
+    info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    info.commandBufferCount = 1; //MAX_FRAMES_IN_FLIGHT;
+
+    return info;
+}
+
+VkCommandBufferBeginInfo CIHelp::SetBeginInfo(){
+
+    VkCommandBufferBeginInfo info{
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO
+    };
+
+    return info;
+}
+
+VkImageMemoryBarrier2 CIHelp::SetBarrierInfo(const VulkanStructs::ImageLayout& layout, const VkImage& swapImage){
+
+    VkImageMemoryBarrier2 barrier{};
+
+    barrier.srcStageMask = layout.srcStageMask;
+    barrier.srcAccessMask = layout.srcAccessMask;
+    barrier.dstStageMask = layout.dstStageMask;
+    barrier.dstAccessMask = layout.dstAccessMask;
+    barrier.oldLayout = layout.oldLayout;
+    barrier.newLayout = layout.newLayout;
+    barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.image = swapImage;
+    barrier.subresourceRange = IMAGE_SUBRESOURCE_RANGE;
+
+    return barrier;
+}
+
+VkDependencyInfo CIHelp::SetDependencyInfo(const VkImageMemoryBarrier2 &barrier){
+
+    VkDependencyInfo info{
+        .sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO
+    };
+
+    info.dependencyFlags = {};
+    info.imageMemoryBarrierCount = 1;
+    info.pImageMemoryBarriers = &barrier;
+
+    return info;
+}
+
+VkRenderingAttachmentInfo CIHelp::SetRenderAttachInfo(const VkImageView &imageView){
+
+    VkRenderingAttachmentInfo info{
+        .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO
+    };
+
+    info.imageView = imageView;
+    info.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    info.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    info.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    info.clearValue = CLEAR_COLOR;
+
+    return info;
+}
+
+VkRenderingInfo CIHelp::SetRenderingInfo(const VkRenderingAttachmentInfo &attach, const VkExtent2D &swapExtent){
+
+    VkRenderingInfo info{
+        .sType = VK_STRUCTURE_TYPE_RENDERING_INFO
+    };
+
+    VkRect2D area;
+    area.offset = { 0, 0 };
+    area.extent = swapExtent;
+
+    info.renderArea = area;
+    info.layerCount = 1;
+    info.colorAttachmentCount = 1;
+    info.pColorAttachments = &attach;
+
+    return info;
+}

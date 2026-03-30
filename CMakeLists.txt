@@ -51,7 +51,7 @@ add_executable(${PROJECT_NAME}
     src/utilSrc/FileHandling.cpp
     src/utilSrc/VulkanHelpers/RequirementCheck.cpp
     src/utilSrc/VulkanHelpers/PDDetailExtraction.cpp
-    src/utilSrc/VulkanHelpers/SwapchainHelper.cpp
+    src/utilSrc/VulkanHelpers/ComponentHelper.cpp
     src/utilSrc/VulkanHelpers/CreateInfoHelper.cpp
     src/Game.cpp
     src/GameWindow.cpp
@@ -63,6 +63,7 @@ add_executable(${PROJECT_NAME}
     src/VulkanComponents/VulkanSC.cpp
     src/VulkanComponents/VulkanSM.cpp
     src/VulkanComponents/VulkanGP.cpp
+    src/VulkanComponents/VulkanCmdPool.cpp
 )
 
 add_dependencies(${PROJECT_NAME} Shaders)

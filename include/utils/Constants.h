@@ -15,6 +15,8 @@ constexpr const char* REQUIRED_VALIDATION_LAYERS[] = {
 
 constexpr size_t NO_FAMILY_INDEX = std::numeric_limits<size_t>::max();
 
+constexpr VkClearValue CLEAR_COLOR{ 0.1f, 0.1f, 0.1f, 1.0f };
+
 constexpr std::array<std::pair<uint32_t, const char*>, 5> API_VERSIONS = {{
     {VK_API_VERSION_1_0, "VULKAN API VERSION 1.0"},
     {VK_API_VERSION_1_1, "VULKAN API VERSION 1.1"},
@@ -40,4 +42,12 @@ constexpr VkColorComponentFlags COLOR_WRITE_MASK{
     VK_COLOR_COMPONENT_G_BIT |
     VK_COLOR_COMPONENT_B_BIT |
     VK_COLOR_COMPONENT_A_BIT
+};
+
+constexpr VkImageSubresourceRange IMAGE_SUBRESOURCE_RANGE{
+    .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+    .baseMipLevel = 0,
+    .levelCount = 1,
+    .baseArrayLayer = 0,
+    .layerCount = 1
 };

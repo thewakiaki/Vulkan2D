@@ -52,4 +52,13 @@ namespace VulkanStructs{
         DeviceFeatures requiredFeatures;
     };
 
+    struct ImageLayout{
+
+        VkImageLayout oldLayout;
+        VkImageLayout newLayout;
+        VkAccessFlags2 srcAccessMask;
+        VkAccessFlags2 dstAccessMask;
+        VkPipelineStageFlags2 srcStageMask;
+        VkPipelineStageFlags2 dstStageMask;
+    };
 }

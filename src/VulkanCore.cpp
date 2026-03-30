@@ -6,6 +6,7 @@
 #include "VulkanComponents/VulkanLD.h"
 #include "VulkanComponents/VulkanSC.h"
 #include "VulkanComponents/VulkanGP.h"
+#include "VulkanComponents/VulkanCmdPool.h"
 
 VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
 
@@ -17,10 +18,12 @@ VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
     mLogicalDevice = std::make_unique<VulkanLD>(*mPhysicalDevice, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures);
     mSwapchain = std::make_unique<VulkanSC>(*mLogicalDevice, *mPhysicalDevice, *mSurface, mGameWindow);
     mGraphicsPipeline = std::make_unique<VulkanGP>(*mLogicalDevice, *mSwapchain);
+    mCommandPool = std::make_unique<VulkanCmdPool>(*mPhysicalDevice, *mLogicalDevice, *mSwapchain, *mGraphicsPipeline);
 }
 
 VulkanCore::~VulkanCore(){
 
+    mCommandPool.reset();
     mGraphicsPipeline.reset();
     mSwapchain.reset();
     mLogicalDevice.reset();
@@ -44,6 +47,10 @@ bool VulkanCore::InitVulkan(){
     if(!mSwapchain->SetupSwapchain()) { return false; }
 
     if(!mGraphicsPipeline->SetupGraphicsPipeline()) { return false; }
+
+    if(!mCommandPool->SetupCommandPool()) { return false; }
+
+    if(!mCommandPool->SetupCommandBuffers()) { return false; }
 
     return true;
 }

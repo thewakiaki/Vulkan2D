@@ -14,6 +14,8 @@ public:
 
     bool SetupGraphicsPipeline();
 
+    const VkPipeline& GetPipeline() const { return mGraphicsPipeline; }
+
 private:
     bool SetupPipelineLayout(const VkPipelineLayoutCreateInfo& createInfo);
     bool SetupShaderModules();

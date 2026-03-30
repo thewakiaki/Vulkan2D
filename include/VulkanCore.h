@@ -9,6 +9,7 @@ class VulkanPD;
 class VulkanLD;
 class VulkanSC;
 class VulkanGP;
+class VulkanCmdPool;
 
 class VulkanCore : private ClassUtilities::ImmutableOwner<VulkanCore>{
 
@@ -28,6 +29,7 @@ private:
     std::unique_ptr<VulkanLD> mLogicalDevice;
     std::unique_ptr<VulkanSC> mSwapchain;
     std::unique_ptr<VulkanGP> mGraphicsPipeline;
+    std::unique_ptr<VulkanCmdPool> mCommandPool;
 
     VulkanStructs::VulkanRequirements mVulkanRequirements;
 

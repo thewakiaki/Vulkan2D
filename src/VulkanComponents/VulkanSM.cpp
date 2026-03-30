@@ -14,6 +14,7 @@ VulkanSM::VulkanSM(const VulkanLD& lDevice, ShaderType type) : mLogicalDevice(lD
 
 VulkanSM::~VulkanSM(){
     Cleanup();
+
 }
 
 bool VulkanSM::SetupShaderModule(const char* filePath){

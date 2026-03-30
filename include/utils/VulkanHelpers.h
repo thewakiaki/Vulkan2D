@@ -49,6 +49,14 @@ namespace VulkanHelpers {
             const VkPipelineVertexInputStateCreateInfo& vertInputCI, const VkPipelineViewportStateCreateInfo& viewportCI,
             const VkPipelineRasterizationStateCreateInfo& rasterCI, const VkPipelineMultisampleStateCreateInfo& multisampleCI,
             const VkPipelineDepthStencilStateCreateInfo& depthStencilCI, const VkPipelineColorBlendStateCreateInfo& colorBlendCI, const VkPipelineLayout& layout);
+
+        VkCommandPoolCreateInfo SetCmdPoolCI(const VulkanStructs::PDDetails& pDevice);
+        VkCommandBufferAllocateInfo SetBufferAllocInfo(const VkCommandPool& pool);
+        VkCommandBufferBeginInfo SetBeginInfo();
+        VkImageMemoryBarrier2 SetBarrierInfo(const VulkanStructs::ImageLayout& layout, const VkImage& swapImage);
+        VkDependencyInfo SetDependencyInfo(const VkImageMemoryBarrier2& barrier);
+        VkRenderingAttachmentInfo SetRenderAttachInfo(const VkImageView& imageView);
+        VkRenderingInfo SetRenderingInfo(const VkRenderingAttachmentInfo& attach, const VkExtent2D& swapExtent);
     }
 
     namespace PDDetailExtraction{
@@ -62,8 +70,12 @@ namespace VulkanHelpers {
 
     }
 
-    namespace SwapchainHelper {
+    namespace ComponentHelper {
 
         VkExtent2D SetSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
+
+        VulkanStructs::ImageLayout SetImageLayout(VkImageLayout oLay, VkImageLayout nLay, VkAccessFlags2 src,
+                                                    VkAccessFlags2 dst, VkPipelineStageFlags2 srcStg, VkPipelineStageFlags2 dstStg);
+
     }
 }

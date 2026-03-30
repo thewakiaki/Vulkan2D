@@ -8,7 +8,7 @@
 #include "VulkanComponents/VulkanSurface.h"
 #include "GameWindow.h"
 
-namespace SCHelp = VulkanHelpers::SwapchainHelper;
+namespace SCHelp = VulkanHelpers::ComponentHelper;
 namespace CIHelp = VulkanHelpers::CreateInfoHelper;
 
 VulkanSC::VulkanSC(const VulkanLD& lDevice, const VulkanPD& pDevice, const VulkanSurface& surface, GameWindow& window) :
