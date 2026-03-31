@@ -1,5 +1,7 @@
 #include "VulkanCore.h"
 
+#include "GameWindow.h"
+
 #include "VulkanComponents/VulkanInstance.h"
 #include "VulkanComponents/VulkanSurface.h"
 #include "VulkanComponents/VulkanPD.h"
@@ -10,6 +12,8 @@
 #include "VulkanComponents/VulkanRenderer.h"
 
 VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
+
+    mGameWindow.SetVulkanCore(this);
 
     SetRequirements();
 
@@ -36,6 +40,8 @@ VulkanCore::~VulkanCore(){
 }
 
 bool VulkanCore::InitVulkan(){
+
+
 
     fmt::print("Initialising Vulkan\n");
 
@@ -97,4 +103,9 @@ void VulkanCore::AddGlfwExtensions(std::vector<const char*>& required){
     {
         required.emplace_back(glfwExtensions[i]);
     }
+}
+
+void VulkanCore::ToggleFrameBufferResize(){
+
+    mRenderer->ResizedFrameBuffer();
 }

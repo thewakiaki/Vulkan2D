@@ -11,12 +11,13 @@ class VulkanRenderer : private ClassUtilities::ImmutableOwner<VulkanRenderer>{
 
 public:
 
-    VulkanRenderer(VulkanCmdPool& cmdPool, const VulkanLD& lDevice, const VulkanSC& swaphchain);
+    VulkanRenderer(VulkanCmdPool& cmdPool, const VulkanLD& lDevice, VulkanSC& swaphchain);
     ~VulkanRenderer();
 
     bool SetupRenderer();
     bool DrawFrame();
 
+    void ResizedFrameBuffer() { mFramebufferResized = true; }
 
 private:
     bool SetupSyncObjects();
@@ -30,11 +31,16 @@ private:
     bool SubmitQueue(const uint32_t& frame, const uint32_t& imageIndex);
     bool PresentQueue(const uint32_t& imageIndex);
 
+    bool RecreateSwapchain(VkResult& result);
+
     VulkanStructs::SyncObjects mSyncObjects;
 
     uint32_t mFiFIndex = 0;
 
+    bool mSkipFrame = false;
+    bool mFramebufferResized = false;
+
     VulkanCmdPool& mCommandPool;
+    VulkanSC& mSwapchain;
     const VulkanLD& mLogicalDevice;
-    const VulkanSC& mSwapchain;
 };

@@ -423,12 +423,7 @@ VkFenceCreateInfo CIHelp::SetFenceInfo(size_t fenceIndex){
         .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO
     };
 
-    if(fenceIndex == 0){
-        info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-    }
-    else{
-        info.flags = 0;
-    }
+    info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
     return info;
 }

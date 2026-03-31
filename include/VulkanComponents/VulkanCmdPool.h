@@ -17,14 +17,14 @@ public:
     bool SetupCommandPool();
     bool SetupCommandBuffers();
 
-    void RecordCommandBuffer(uint32_t imageIndex);
+    void RecordCommandBuffer(uint32_t imageIndex, uint32_t frameIndex);
 
     const VkCommandPool& GetCommandPool() const { return mCommandPool; }
     const std::array<VkCommandBuffer, MAX_FRAMES_IN_FLIGHT>& GetCommandBuffer() const { return mCommandBuffers; }
 
 private:
 
-    void TransitionImageLayout(uint32_t imageIndex, VulkanStructs::ImageLayout layout);
+    void TransitionImageLayout(uint32_t imageIndex, VulkanStructs::ImageLayout layout, uint32_t frameIndex);
 
     VkCommandPool mCommandPool = VK_NULL_HANDLE;
 

@@ -63,43 +63,48 @@ bool VulkanCmdPool::SetupCommandBuffers(){
     return true;
 }
 
-void VulkanCmdPool::RecordCommandBuffer(uint32_t imageIndex){
+void VulkanCmdPool::RecordCommandBuffer(uint32_t imageIndex, uint32_t frameIndex){
 
     VkCommandBufferBeginInfo beginInfo = CIHelp::SetBeginInfo();
 
-    vkBeginCommandBuffer(mCommandBuffers[0], &beginInfo);
+    vkBeginCommandBuffer(mCommandBuffers[frameIndex], &beginInfo);
 
-    TransitionImageLayout(imageIndex, mPreRenderLayout);
+    TransitionImageLayout(imageIndex, mPreRenderLayout, frameIndex);
 
     VkRenderingAttachmentInfo attachInfo = CIHelp::SetRenderAttachInfo(mSwapchain.GetImageViews()[imageIndex]);
     VkRenderingInfo renderingInfo = CIHelp::SetRenderingInfo(attachInfo, mSwapchain.GetSwapExtent());
 
-    vkCmdBeginRendering(mCommandBuffers[0], &renderingInfo);
+    vkCmdBeginRendering(mCommandBuffers[frameIndex], &renderingInfo);
 
-    vkCmdBindPipeline(mCommandBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, mGraphicsPipeline.GetPipeline());
+    vkCmdBindPipeline(mCommandBuffers[frameIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, mGraphicsPipeline.GetPipeline());
+
+    VkExtent2D extent = mSwapchain.GetSwapExtent();
+    fmt::print("RecordCommandBuffer: extent = {} x {}\n", extent.width, extent.height);
 
     VkViewport viewport = VkViewport(0.0f, 0.0f, static_cast<float>(mSwapchain.GetSwapExtent().width),
                                      static_cast<float>(mSwapchain.GetSwapExtent().height), 0.0f, 1.0f);
     VkRect2D scissor = VkRect2D(VkOffset2D(0, 0), mSwapchain.GetSwapExtent());
 
-    vkCmdSetViewport(mCommandBuffers[0], 0, 1, &viewport);
-    vkCmdSetScissor(mCommandBuffers[0], 0, 1, &scissor);
 
-    vkCmdDraw(mCommandBuffers[0], 3, 1, 0, 0);
 
-    vkCmdEndRendering(mCommandBuffers[0]);
+    vkCmdSetViewport(mCommandBuffers[frameIndex], 0, 1, &viewport);
+    vkCmdSetScissor(mCommandBuffers[frameIndex], 0, 1, &scissor);
 
-    TransitionImageLayout(imageIndex, mPostRenderLayout);
+    vkCmdDraw(mCommandBuffers[frameIndex], 3, 1, 0, 0);
 
-    vkEndCommandBuffer(mCommandBuffers[0]);
+    vkCmdEndRendering(mCommandBuffers[frameIndex]);
+
+    TransitionImageLayout(imageIndex, mPostRenderLayout, frameIndex);
+
+    vkEndCommandBuffer(mCommandBuffers[frameIndex]);
 }
 
-void VulkanCmdPool::TransitionImageLayout(uint32_t imageIndex, VulkanStructs::ImageLayout layout){
+void VulkanCmdPool::TransitionImageLayout(uint32_t imageIndex, VulkanStructs::ImageLayout layout, uint32_t frameIndex){
 
     VkImageMemoryBarrier2 barrier = CIHelp::SetBarrierInfo(layout, mSwapchain.GetImages()[imageIndex]);
 
     VkDependencyInfo dependecyInfo = CIHelp::SetDependencyInfo(barrier);
 
-    vkCmdPipelineBarrier2(mCommandBuffers[0], &dependecyInfo);
+    vkCmdPipelineBarrier2(mCommandBuffers[frameIndex], &dependecyInfo);
 
 }

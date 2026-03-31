@@ -9,7 +9,7 @@
 
 namespace CIHelp = VulkanHelpers::CreateInfoHelper;
 
-VulkanRenderer::VulkanRenderer(VulkanCmdPool& cmdPool, const VulkanLD& lDevice, const VulkanSC& swaphchain)
+VulkanRenderer::VulkanRenderer(VulkanCmdPool& cmdPool, const VulkanLD& lDevice, VulkanSC& swaphchain)
                                 : mCommandPool(cmdPool), mLogicalDevice(lDevice), mSwapchain(swaphchain) {
 
     //mSyncObject.presentCompleteSemaphores.resize(1);
@@ -65,7 +65,7 @@ bool VulkanRenderer::DrawFrame(){
 
     vkResetCommandBuffer(mCommandPool.GetCommandBuffer()[mFiFIndex], 0);
 
-    mCommandPool.RecordCommandBuffer(imageIndex);
+    mCommandPool.RecordCommandBuffer(imageIndex, mFiFIndex);
 
     if(!SubmitQueue(mFiFIndex, imageIndex)) { return false; }
 
@@ -141,7 +141,8 @@ bool VulkanRenderer::SetupFences(){
 
 bool VulkanRenderer::WaitForFences(const uint32_t& frame){
 
-    VkResult fenceResult = vkWaitForFences(mLogicalDevice.GetLogicalDevice(), 1, &mSyncObjects.drawFences[mFiFIndex], VK_TRUE, UINT64_MAX);
+    VkResult fenceResult = vkWaitForFences(mLogicalDevice.GetLogicalDevice(), 1, &mSyncObjects.drawFences[mFiFIndex], VK_TRUE, UINT64_MAX
+    );
 
     if(!ErrorChecking::VkFailedToWaitForFences(fenceResult)) { return false; }
 
@@ -159,8 +160,12 @@ bool VulkanRenderer::ResetFences(const uint32_t& frame){
 
 bool VulkanRenderer::AcquireNextImage(uint32_t& imageIndex, const uint32_t& frame){
 
-    VkResult result = vkAcquireNextImageKHR(mLogicalDevice.GetLogicalDevice(), mSwapchain.GetSwapchain(), UINT64_MAX, mSyncObjects.presentCompleteSemaphores[0],
+    VkResult result = vkAcquireNextImageKHR(mLogicalDevice.GetLogicalDevice(), mSwapchain.GetSwapchain(), UINT64_MAX, mSyncObjects.presentCompleteSemaphores[frame],
                                                 VK_NULL_HANDLE, &imageIndex);
+
+    //if(!RecreateSwapchain(result)) { return false; }
+
+    if(mSkipFrame) { return false; }
 
     if (!ErrorChecking::VkFailedToAcquireImage(result)) { return false; }
 
@@ -185,7 +190,29 @@ bool VulkanRenderer::PresentQueue(const uint32_t& imageIndex){
 
     VkResult result = vkQueuePresentKHR(mLogicalDevice.GetPresentQueue(), &presentInfo);
 
+    //if(!RecreateSwapchain(result)) { return false; }
+
+    if(mSkipFrame) { return false; }
+
     if(!ErrorChecking::VkFailedToPresentQueue(result)) { return false; }
+
+    return true;
+}
+
+bool VulkanRenderer::RecreateSwapchain(VkResult& result){
+
+    if(result == VK_ERROR_OUT_OF_DATE_KHR ||  result == VK_SUBOPTIMAL_KHR || mFramebufferResized){
+
+        mSkipFrame = true;
+        mFramebufferResized = false;
+        return mSwapchain.RecreateSwapchain();
+    }
+
+    if((result != VK_SUCCESS) && (result != VK_SUBOPTIMAL_KHR)){
+
+        assert(result == VK_TIMEOUT || result == VK_NOT_READY);
+        throw std::runtime_error("failed to acquire swap chain image!");
+    }
 
     return true;
 }

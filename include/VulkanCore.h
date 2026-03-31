@@ -22,6 +22,9 @@ public:
 
     bool DrawFrame();
 
+    void ToggleFrameBufferResize();
+    const VulkanLD& GetLogicalDevice() const { return *mLogicalDevice; }
+
 private:
     void SetRequirements();
     void AddGlfwExtensions(std::vector<const char*>& required);

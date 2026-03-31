@@ -14,6 +14,7 @@ public:
     ~VulkanSC();
 
     bool SetupSwapchain();
+    bool RecreateSwapchain();
 
     const VkSwapchainKHR& GetSwapchain() const { return mSwapchain; }
     const VkSurfaceCapabilitiesKHR& GetCapabilities() const { return mCapabilities; }
@@ -35,6 +36,10 @@ private:
     bool SetupImages();
     bool GetSCImages();
     bool SetSCImageViews();
+
+    void CleanupSwapchain();
+    void CleanupSwapchainImageViews();
+    void ResetMemberVars();
 
     uint32_t SelectMinImageCount();
 

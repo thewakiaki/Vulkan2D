@@ -18,21 +18,9 @@ VulkanSC::VulkanSC(const VulkanLD& lDevice, const VulkanPD& pDevice, const Vulka
 
 VulkanSC::~VulkanSC(){
 
-    if(!mImageViews.empty()){
-        for(VkImageView& imageView : mImageViews){
-            vkDestroyImageView(mLogicalDevice.GetLogicalDevice(), imageView, nullptr);
-            imageView = VK_NULL_HANDLE;
-        }
+    CleanupSwapchainImageViews();
 
-        mImageViews.clear();
-        fmt::print("Image Views Destroyed\n");
-    }
-
-    if(mSwapchain != VK_NULL_HANDLE){
-        vkDestroySwapchainKHR(mLogicalDevice.GetLogicalDevice(), mSwapchain, nullptr);
-        mSwapchain = VK_NULL_HANDLE;
-        fmt::print("Swapchain Destroyed\n");
-    }
+    CleanupSwapchain();
 }
 
 bool VulkanSC::SetupSwapchain(){
@@ -53,6 +41,8 @@ bool VulkanSC::SetupSwapchain(){
 
     mSwapExtent = SCHelp::SetSwapExtent(mCapabilities, mWindow.GetWindow());
 
+    fmt::print("Swap Extent: {} x {}\n", mSwapExtent.width, mSwapExtent.height);
+
     mImageCount = SelectMinImageCount();
 
     fmt::print("Swapchain min Image Set\n");
@@ -69,6 +59,34 @@ bool VulkanSC::SetupSwapchain(){
     if(!SetupImages()) { return false; }
 
     fmt::print("Swapchain Setup\n");
+
+    return true;
+}
+
+bool VulkanSC::RecreateSwapchain(){
+
+    fmt::print("----------------------------------\n");
+    fmt::print("Recreating Swapchain\n");
+
+    int width = 0, height = 0;
+
+    glfwGetFramebufferSize(mWindow.GetWindow(), &width, &height);
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(mWindow.GetWindow(), &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(mLogicalDevice.GetLogicalDevice());
+
+    ResetMemberVars();
+    CleanupSwapchainImageViews();
+    CleanupSwapchain();
+
+    if(!SetupSwapchain()) { return false; }
+
+     fmt::print("Swap Extent: {} x {}\n", mSwapExtent.width, mSwapExtent.height);
+
+    fmt::print("Swapchain Recreated\n");
 
     return true;
 }
@@ -229,4 +247,38 @@ uint32_t VulkanSC::SelectMinImageCount(){
     if((0 < mCapabilities.maxImageCount) && (mCapabilities.maxImageCount <= mCapabilities.minImageCount)) { return mCapabilities.maxImageCount; }
 
     return target;
+}
+
+void VulkanSC::CleanupSwapchain(){
+
+    if(mSwapchain != VK_NULL_HANDLE){
+        vkDestroySwapchainKHR(mLogicalDevice.GetLogicalDevice(), mSwapchain, nullptr);
+        mSwapchain = VK_NULL_HANDLE;
+        fmt::print("Swapchain Destroyed\n");
+    }
+}
+
+void VulkanSC::CleanupSwapchainImageViews(){
+
+    if(!mImageViews.empty()){
+        for(VkImageView& imageView : mImageViews){
+            vkDestroyImageView(mLogicalDevice.GetLogicalDevice(), imageView, nullptr);
+            imageView = VK_NULL_HANDLE;
+        }
+
+        mImageViews.clear();
+        fmt::print("Image Views Destroyed\n");
+    }
+}
+
+void VulkanSC::ResetMemberVars(){
+
+    mImageCount = 0;
+    mImages.clear();
+    mCapabilities = {};
+    mSwapExtent = { 0, 0 };
+    mSelectedFormat = {};
+    mSelectedPresentMode = {};
+    mShareMode = {};
+
 }

@@ -2,6 +2,7 @@
 
 #include "VulkanCore.h"
 #include "GameWindow.h"
+#include "VulkanComponents/VulkanLD.h"
 
 Game::Game(VulkanCore& vulkan, GameWindow& window) : mVulkan(vulkan), mWindow(window){
 
@@ -28,6 +29,7 @@ void Game::Play(){
     fmt::print("Game Running\n");
 
     while(mPlaying && !glfwWindowShouldClose(mWindow.GetWindow())){
+        fmt::print("New Frame\n");
         glfwPollEvents();
 
         if (glfwGetKey(mWindow.GetWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS){
@@ -35,9 +37,10 @@ void Game::Play(){
             fmt::print("Escape pressed\n");
         }
 
-        mPlaying = mVulkan.DrawFrame();
-
+        if(!mVulkan.DrawFrame()) { fmt::print("Skipping Frame\n"); }
     }
 
     fmt::print("Game Ending\n");
+
+    vkDeviceWaitIdle(mVulkan.GetLogicalDevice().GetLogicalDevice());
 }

@@ -2,12 +2,12 @@
 
 #include "utils/Constants.h"
 #include "utils/ErrorChecking.h"
+#include "VulkanCore.h"
 
 using namespace ErrorChecking;
 
 GameWindow::GameWindow(){
     mGameWindow = nullptr;
-
 }
 
 GameWindow::~GameWindow(){
@@ -16,6 +16,10 @@ GameWindow::~GameWindow(){
     {
         glfwDestroyWindow(mGameWindow);
         mGameWindow = nullptr;
+    }
+
+    if(mVulkan){
+        mVulkan = nullptr;
     }
 
 }
@@ -30,8 +34,8 @@ bool GameWindow::InitWindow(){
 
     if(!CreateWindow()) { return false;}
 
-    glfwShowWindow(mGameWindow);
-    glfwFocusWindow(mGameWindow);
+    glfwSetWindowUserPointer(mGameWindow, this);
+    glfwSetFramebufferSizeCallback(mGameWindow, FrameBufferResizeCallback);
 
     fmt::print("Window Setup\n");
 
@@ -40,7 +44,7 @@ bool GameWindow::InitWindow(){
 
 void GameWindow::SetWindowHints(){
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 }
 
 bool GameWindow::CreateWindow(){
@@ -50,4 +54,11 @@ bool GameWindow::CreateWindow(){
     GlfwWindowCheck(mGameWindow, "Creation");
 
     return true;
+}
+
+void GameWindow::FrameBufferResizeCallback(GLFWwindow *window, int width, int height){
+
+    auto self = static_cast<GameWindow*>(glfwGetWindowUserPointer(window));
+
+    if(self){ self->mVulkan->ToggleFrameBufferResize(); }
 }
