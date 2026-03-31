@@ -9,6 +9,8 @@ constexpr size_t MAX_FRAMES_IN_FLIGHT = 2;
 
 constexpr float QUEUE_PRIORITY = 0.5f;
 
+constexpr uint64_t TIMEOUT_TIME_1S = 1'000'000'000ULL;
+
 constexpr const char* REQUIRED_VALIDATION_LAYERS[] = {
     "VK_LAYER_KHRONOS_validation"
 };

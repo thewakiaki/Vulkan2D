@@ -84,7 +84,7 @@ bool VulkanSC::RecreateSwapchain(){
 
     if(!SetupSwapchain()) { return false; }
 
-     fmt::print("Swap Extent: {} x {}\n", mSwapExtent.width, mSwapExtent.height);
+    fmt::print("Swap Extent: {} x {}\n", mSwapExtent.width, mSwapExtent.height);
 
     fmt::print("Swapchain Recreated\n");
 
@@ -220,6 +220,7 @@ bool VulkanSC::GetSCImages(){
 
 bool VulkanSC::SetSCImageViews(){
 
+    mImageViews.clear();
     mImageViews.resize(mImages.size());
 
     for(int i = 0; i < mImages.size(); ++i){

@@ -109,3 +109,8 @@ void VulkanCore::ToggleFrameBufferResize(){
 
     mRenderer->ResizedFrameBuffer();
 }
+
+const bool& VulkanCore::GetFatalError() const {
+
+    return mRenderer->GetFatalErrorState();
+}

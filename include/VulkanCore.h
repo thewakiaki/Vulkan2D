@@ -24,6 +24,7 @@ public:
 
     void ToggleFrameBufferResize();
     const VulkanLD& GetLogicalDevice() const { return *mLogicalDevice; }
+    const bool& GetFatalError() const;
 
 private:
     void SetRequirements();

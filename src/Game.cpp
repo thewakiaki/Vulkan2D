@@ -28,7 +28,7 @@ void Game::Play(){
     fmt::print("----------------------\n");
     fmt::print("Game Running\n");
 
-    while(mPlaying && !glfwWindowShouldClose(mWindow.GetWindow())){
+    while(mPlaying && !glfwWindowShouldClose(mWindow.GetWindow()) && !mVulkan.GetFatalError()){
         fmt::print("New Frame\n");
         glfwPollEvents();
 

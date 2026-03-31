@@ -18,6 +18,7 @@ public:
     bool DrawFrame();
 
     void ResizedFrameBuffer() { mFramebufferResized = true; }
+    const bool& GetFatalErrorState() const { return mFatalError; }
 
 private:
     bool SetupSyncObjects();
@@ -31,7 +32,7 @@ private:
     bool SubmitQueue(const uint32_t& frame, const uint32_t& imageIndex);
     bool PresentQueue(const uint32_t& imageIndex);
 
-    bool RecreateSwapchain(VkResult& result);
+    bool SwapchainOK(VkResult& result);
 
     VulkanStructs::SyncObjects mSyncObjects;
 
@@ -39,6 +40,7 @@ private:
 
     bool mSkipFrame = false;
     bool mFramebufferResized = false;
+    bool mFatalError = false;;
 
     VulkanCmdPool& mCommandPool;
     VulkanSC& mSwapchain;

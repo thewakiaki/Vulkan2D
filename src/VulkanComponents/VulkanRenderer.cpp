@@ -2,6 +2,7 @@
 
 #include "utils/VulkanHelpers.h"
 #include "utils/ErrorChecking.h"
+#include "utils/Constants.h"
 
 #include "VulkanComponents/VulkanCmdPool.h"
 #include "VulkanComponents/VulkanLD.h"
@@ -12,7 +13,6 @@ namespace CIHelp = VulkanHelpers::CreateInfoHelper;
 VulkanRenderer::VulkanRenderer(VulkanCmdPool& cmdPool, const VulkanLD& lDevice, VulkanSC& swaphchain)
                                 : mCommandPool(cmdPool), mLogicalDevice(lDevice), mSwapchain(swaphchain) {
 
-    //mSyncObject.presentCompleteSemaphores.resize(1);
 }
 
 VulkanRenderer::~VulkanRenderer(){
@@ -59,9 +59,9 @@ bool VulkanRenderer::DrawFrame(){
 
     if(!WaitForFences(mFiFIndex)) { return false; }
 
-    if(!ResetFences(mFiFIndex)) { return false; }
-
     if(!AcquireNextImage(imageIndex, mFiFIndex)) { return false; }
+
+    if(!ResetFences(mFiFIndex)) { return false; }
 
     vkResetCommandBuffer(mCommandPool.GetCommandBuffer()[mFiFIndex], 0);
 
@@ -141,8 +141,7 @@ bool VulkanRenderer::SetupFences(){
 
 bool VulkanRenderer::WaitForFences(const uint32_t& frame){
 
-    VkResult fenceResult = vkWaitForFences(mLogicalDevice.GetLogicalDevice(), 1, &mSyncObjects.drawFences[mFiFIndex], VK_TRUE, UINT64_MAX
-    );
+    VkResult fenceResult = vkWaitForFences(mLogicalDevice.GetLogicalDevice(), 1, &mSyncObjects.drawFences[mFiFIndex], VK_TRUE, UINT64_MAX);
 
     if(!ErrorChecking::VkFailedToWaitForFences(fenceResult)) { return false; }
 
@@ -163,11 +162,7 @@ bool VulkanRenderer::AcquireNextImage(uint32_t& imageIndex, const uint32_t& fram
     VkResult result = vkAcquireNextImageKHR(mLogicalDevice.GetLogicalDevice(), mSwapchain.GetSwapchain(), UINT64_MAX, mSyncObjects.presentCompleteSemaphores[frame],
                                                 VK_NULL_HANDLE, &imageIndex);
 
-    //if(!RecreateSwapchain(result)) { return false; }
-
-    if(mSkipFrame) { return false; }
-
-    if (!ErrorChecking::VkFailedToAcquireImage(result)) { return false; }
+    if(!SwapchainOK(result)) { return false; }
 
     return true;
 }
@@ -190,29 +185,26 @@ bool VulkanRenderer::PresentQueue(const uint32_t& imageIndex){
 
     VkResult result = vkQueuePresentKHR(mLogicalDevice.GetPresentQueue(), &presentInfo);
 
-    //if(!RecreateSwapchain(result)) { return false; }
-
-    if(mSkipFrame) { return false; }
-
-    if(!ErrorChecking::VkFailedToPresentQueue(result)) { return false; }
+    if(!SwapchainOK(result)) { return false; }
 
     return true;
 }
 
-bool VulkanRenderer::RecreateSwapchain(VkResult& result){
+bool VulkanRenderer::SwapchainOK(VkResult& result){
 
-    if(result == VK_ERROR_OUT_OF_DATE_KHR ||  result == VK_SUBOPTIMAL_KHR || mFramebufferResized){
-
+    if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || mFramebufferResized){
         mSkipFrame = true;
         mFramebufferResized = false;
-        return mSwapchain.RecreateSwapchain();
+        mSwapchain.RecreateSwapchain();
+        return false;
     }
 
-    if((result != VK_SUCCESS) && (result != VK_SUBOPTIMAL_KHR)){
-
-        assert(result == VK_TIMEOUT || result == VK_NOT_READY);
-        throw std::runtime_error("failed to acquire swap chain image!");
+    if(result != VK_SUCCESS){
+        fmt::print("Fatal Error closing app {}", string_VkResult(result));
+        mFatalError = true;
+        return false;
     }
+
 
     return true;
 }
