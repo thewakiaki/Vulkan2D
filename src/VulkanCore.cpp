@@ -10,6 +10,7 @@
 #include "VulkanComponents/VulkanGP.h"
 #include "VulkanComponents/VulkanCmdPool.h"
 #include "VulkanComponents/VulkanRenderer.h"
+#include "VulkanComponents/VulkanVBuffer.h"
 
 VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
 
@@ -23,13 +24,15 @@ VulkanCore::VulkanCore(GameWindow& window) : mGameWindow(window) {
     mLogicalDevice = std::make_unique<VulkanLD>(*mPhysicalDevice, mVulkanRequirements.requiredDeviceExtensions, mVulkanRequirements.requiredFeatures);
     mSwapchain = std::make_unique<VulkanSC>(*mLogicalDevice, *mPhysicalDevice, *mSurface, mGameWindow);
     mGraphicsPipeline = std::make_unique<VulkanGP>(*mLogicalDevice, *mSwapchain);
-    mCommandPool = std::make_unique<VulkanCmdPool>(*mPhysicalDevice, *mLogicalDevice, *mSwapchain, *mGraphicsPipeline);
+    mVertexBuffer = std::make_unique<VulkanVBuffer>(*mPhysicalDevice, *mLogicalDevice, *mSwapchain);
+    mCommandPool = std::make_unique<VulkanCmdPool>(*mPhysicalDevice, *mLogicalDevice, *mSwapchain, *mGraphicsPipeline, *mVertexBuffer);
     mRenderer = std::make_unique<VulkanRenderer>(*mCommandPool, *mLogicalDevice, *mSwapchain);
 }
 
 VulkanCore::~VulkanCore(){
 
     mRenderer.reset();
+    mVertexBuffer.reset();
     mCommandPool.reset();
     mGraphicsPipeline.reset();
     mSwapchain.reset();
@@ -58,6 +61,10 @@ bool VulkanCore::InitVulkan(){
     if(!mGraphicsPipeline->SetupGraphicsPipeline()) { return false; }
 
     if(!mCommandPool->SetupCommandPool()) { return false; }
+
+    if(!mVertexBuffer->SetupVertexBuffer(vertices)) { return false; }
+
+    mVertexBuffer->MapMemory(vertices);
 
     if(!mCommandPool->SetupCommandBuffers()) { return false; }
 

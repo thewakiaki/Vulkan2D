@@ -7,11 +7,12 @@ class VulkanPD;
 class VulkanLD;
 class VulkanSC;
 class VulkanGP;
+class VulkanVBuffer;
 
 class VulkanCmdPool : private ClassUtilities::ImmutableOwner<VulkanCmdPool>{
 
 public:
-    VulkanCmdPool(const VulkanPD& pDevice, const VulkanLD& lDevice, const VulkanSC& swapchain, const VulkanGP& pipeline);
+    VulkanCmdPool(const VulkanPD& pDevice, const VulkanLD& lDevice, const VulkanSC& swapchain, const VulkanGP& pipeline, const VulkanVBuffer& vBuffer);
     ~VulkanCmdPool();
 
     bool SetupCommandPool();
@@ -37,4 +38,5 @@ private:
     const VulkanLD& mLogicalDevice;
     const VulkanSC& mSwapchain;
     const VulkanGP& mGraphicsPipeline;
+    const VulkanVBuffer& mVertexBuffer;
 };

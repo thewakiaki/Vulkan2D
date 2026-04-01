@@ -152,11 +152,18 @@ VkPipelineDynamicStateCreateInfo CIHelp::SetDynamicStateCI(){
     return info;
 }
 
-VkPipelineVertexInputStateCreateInfo CIHelp::SetVertInputStateCI(){
+VkPipelineVertexInputStateCreateInfo CIHelp::SetVertInputStateCI(const VkVertexInputBindingDescription& binding,
+                                                                    const  std::array<VkVertexInputAttributeDescription, 2>& attributes){
+
 
     VkPipelineVertexInputStateCreateInfo info{
         .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO
     };
+
+    info.vertexBindingDescriptionCount = 1;
+    info.pVertexBindingDescriptions = &binding;
+    info.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributes.size());
+    info.pVertexAttributeDescriptions = attributes.data();
 
     return info;
 }
@@ -466,6 +473,31 @@ VkPresentInfoKHR CIHelp::SetPresentInfo(const VkSwapchainKHR &swapchain, const V
     info.swapchainCount = 1;
     info.pSwapchains = &swapchain;
     info.pImageIndices = &imageIndex;
+
+    return info;
+}
+
+VkBufferCreateInfo CIHelp::SetBufferCI(const VkSharingMode &mode, const std::vector<VulkanStructs::Vertex> &vertices, const BufferType &type){
+
+    VkBufferCreateInfo info{
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO
+    };
+
+    info.size = sizeof(vertices[0]) * vertices.size();
+    info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    info.sharingMode = mode;
+
+    return info;
+}
+
+VkMemoryAllocateInfo CIHelp::SetMemAllocateCI(const VkMemoryRequirements &requirement, const VkMemoryPropertyFlags &flags, const uint32_t& typeIndex){
+
+    VkMemoryAllocateInfo info{
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO
+    };
+
+    info.allocationSize = requirement.size;
+    info.memoryTypeIndex = typeIndex;
 
     return info;
 }

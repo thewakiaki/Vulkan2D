@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #include <fmt/format.h>
+#include <glm/glm.hpp>
 
 #include <iostream>
 #include <memory>

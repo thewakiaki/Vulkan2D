@@ -9,3 +9,9 @@ enum class ShaderType{
     VERTEX = 0,
     FRAGMENT = 1,
 };
+
+enum class BufferType{
+    STAGING = 0,
+    VERTEX = 1,
+    INDEX = 2
+};

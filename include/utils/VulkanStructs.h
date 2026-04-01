@@ -69,4 +69,34 @@ namespace VulkanStructs{
         std::array<VkFence, MAX_FRAMES_IN_FLIGHT> drawFences { VK_NULL_HANDLE };
 
     };
+
+    struct Vertex{
+        glm::vec2 position;
+        glm::vec3 color;
+
+        static VkVertexInputBindingDescription GetBindingDescription() {
+
+            VkVertexInputBindingDescription description{};
+            description.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+            description.stride = sizeof(Vertex);
+            description.binding = 0;
+            return description;
+        }
+
+        static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescription(){
+            std::array<VkVertexInputAttributeDescription, 2> description;
+
+            description[0].binding = 0;
+            description[0].location = 0;
+            description[0].format = VK_FORMAT_R32G32_SFLOAT;
+            description[0].offset = offsetof(Vertex, position);
+
+            description[1].binding = 0;
+            description[1].location = 1;
+            description[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+            description[1].offset = offsetof(Vertex, color);
+
+            return description;
+        }
+    };
 }

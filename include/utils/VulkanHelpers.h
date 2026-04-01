@@ -33,7 +33,8 @@ namespace VulkanHelpers {
         std::vector<VkPipelineShaderStageCreateInfo> CombineShaderStageInfos(const std::vector<VkPipelineShaderStageCreateInfo>& vert,
                                                                              const std::vector<VkPipelineShaderStageCreateInfo>& frag);
         VkPipelineDynamicStateCreateInfo SetDynamicStateCI();
-        VkPipelineVertexInputStateCreateInfo SetVertInputStateCI();
+        VkPipelineVertexInputStateCreateInfo SetVertInputStateCI(const VkVertexInputBindingDescription& binding,
+                                                                            const  std::array<VkVertexInputAttributeDescription, 2>& attributes);
         VkPipelineInputAssemblyStateCreateInfo SetInputAssemblyStateCI();
         VkPipelineViewportStateCreateInfo SetViewportStateCI(const VkViewport& viewport, const VkRect2D& scissor);
         VkPipelineRasterizationStateCreateInfo SetRasterStateCI();
@@ -64,6 +65,9 @@ namespace VulkanHelpers {
         VkSubmitInfo SetSubmitInfo(const VkPipelineStageFlags& dstStgMask, const VulkanStructs::SyncObjects& sync,
                                         const std::array<VkCommandBuffer, MAX_FRAMES_IN_FLIGHT>& buffer, const uint32_t& fif, const uint32_t& imageIndex);
         VkPresentInfoKHR SetPresentInfo(const VkSwapchainKHR& swapchain, const VulkanStructs::SyncObjects& sync, const uint32_t& imageIndex);
+
+        VkBufferCreateInfo SetBufferCI(const VkSharingMode& mode, const std::vector<VulkanStructs::Vertex>& vertices, const BufferType& type);
+        VkMemoryAllocateInfo SetMemAllocateCI(const VkMemoryRequirements& requirement, const VkMemoryPropertyFlags& flags, const uint32_t& typeIndex);
     }
 
     namespace PDDetailExtraction{

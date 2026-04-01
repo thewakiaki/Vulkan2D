@@ -7,12 +7,13 @@
 #include "VulkanComponents/VulkanLD.h"
 #include "VulkanComponents/VulkanSC.h"
 #include "VulkanComponents/VulkanGP.h"
+#include "VulkanComponents/VulkanVBuffer.h"
 
 namespace CIHelp = VulkanHelpers::CreateInfoHelper;
 namespace CompHelp = VulkanHelpers::ComponentHelper;
 
-VulkanCmdPool::VulkanCmdPool(const VulkanPD& pDevice, const VulkanLD& lDevice, const VulkanSC& swapchain, const VulkanGP& pipeline)
-                                : mPhysicalDevice(pDevice), mLogicalDevice(lDevice), mSwapchain(swapchain), mGraphicsPipeline(pipeline){
+VulkanCmdPool::VulkanCmdPool(const VulkanPD& pDevice, const VulkanLD& lDevice, const VulkanSC& swapchain, const VulkanGP& pipeline, const VulkanVBuffer& vBuffer)
+                : mPhysicalDevice(pDevice), mLogicalDevice(lDevice), mSwapchain(swapchain), mGraphicsPipeline(pipeline), mVertexBuffer(vBuffer){
 
     mPreRenderLayout = CompHelp::SetImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                                             {}, VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
@@ -78,13 +79,15 @@ void VulkanCmdPool::RecordCommandBuffer(uint32_t imageIndex, uint32_t frameIndex
 
     vkCmdBindPipeline(mCommandBuffers[frameIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, mGraphicsPipeline.GetPipeline());
 
+    VkDeviceSize offsets[1] = { 0 };
+    vkCmdBindVertexBuffers(mCommandBuffers[frameIndex], 0, 1, &mVertexBuffer.GetVertexBuffer(), offsets);
+
     VkExtent2D extent = mSwapchain.GetSwapExtent();
     fmt::print("RecordCommandBuffer: extent = {} x {}\n", extent.width, extent.height);
 
     VkViewport viewport = VkViewport(0.0f, 0.0f, static_cast<float>(mSwapchain.GetSwapExtent().width),
                                      static_cast<float>(mSwapchain.GetSwapExtent().height), 0.0f, 1.0f);
     VkRect2D scissor = VkRect2D(VkOffset2D(0, 0), mSwapchain.GetSwapExtent());
-
 
 
     vkCmdSetViewport(mCommandBuffers[frameIndex], 0, 1, &viewport);

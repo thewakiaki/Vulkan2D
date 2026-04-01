@@ -48,6 +48,9 @@ bool VulkanGP::SetupGraphicsPipeline(){
 
     fmt::print("----------------------------------\n");
 
+    VkVertexInputBindingDescription binding = VulkanStructs::Vertex::GetBindingDescription();
+    std::array<VkVertexInputAttributeDescription, 2> attributes = VulkanStructs::Vertex::GetAttributeDescription();
+
     std::vector<VkPipelineShaderStageCreateInfo> vertShaderStageCI;
     std::vector<VkPipelineShaderStageCreateInfo> fragShaderStageCI;
 
@@ -55,7 +58,7 @@ bool VulkanGP::SetupGraphicsPipeline(){
 
     std::vector<VkPipelineShaderStageCreateInfo> shaderStageCI = CIHelp::CombineShaderStageInfos(vertShaderStageCI, fragShaderStageCI);
     VkPipelineDynamicStateCreateInfo dynamicStateCI = CIHelp::SetDynamicStateCI();
-    VkPipelineVertexInputStateCreateInfo vertInputStateCI = CIHelp::SetVertInputStateCI();
+    VkPipelineVertexInputStateCreateInfo vertInputStateCI = CIHelp::SetVertInputStateCI(binding, attributes);
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyCI = CIHelp::SetInputAssemblyStateCI();
     VkPipelineViewportStateCreateInfo viewportStateCI = CIHelp::SetViewportStateCI(mViewport, mScissor);
     VkPipelineRasterizationStateCreateInfo rasterStateCI = CIHelp::SetRasterStateCI();
